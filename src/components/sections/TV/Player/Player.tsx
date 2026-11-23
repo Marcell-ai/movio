@@ -5,10 +5,14 @@ import { Card, Skeleton } from "@heroui/react";
 import { useDisclosure, useDocumentTitle, useIdle, useLocalStorage } from "@mantine/hooks";
 import dynamic from "next/dynamic";
 import { parseAsInteger, useQueryState } from "nuqs";
-import { memo, useCallback, useEffect, useMemo, useRef } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Episode, TvShowDetails } from "tmdb-ts";
 import useBreakpoints from "@/hooks/useBreakpoints";
-import { ADS_WARNING_STORAGE_KEY, SpacingClasses } from "@/utils/constants";
+import {
+  ADS_WARNING_STORAGE_KEY,
+  TV_PROVIDER_STORAGE_KEY,
+  SpacingClasses,
+} from "@/utils/constants";
 const AdsWarning = dynamic(() => import("@/components/ui/overlay/AdsWarning"));
 const TvShowPlayerHeader = dynamic(() => import("./Header"));
 const TvShowPlayerSourceSelection = dynamic(() => import("./SourceSelection"));
@@ -38,6 +42,12 @@ const TvShowPlayer: React.FC<TvShowPlayerProps> = ({
     key: ADS_WARNING_STORAGE_KEY,
     getInitialValueInEffect: false,
   });
+  const [preferredProvider, setPreferredProvider] = useLocalStorage<string>({
+    key: TV_PROVIDER_STORAGE_KEY,
+    defaultValue: "",
+    getInitialValueInEffect: false,
+  });
+  const [playerStatus, setPlayerStatus] = useState<"loading" | "loaded" | "failed">("loading");
 
   const { mobile } = useBreakpoints();
   const players = getTvShowPlayers(id, episode.season_number, episode.episode_number, startAt);
@@ -49,6 +59,12 @@ const TvShowPlayer: React.FC<TvShowPlayerProps> = ({
     parseAsInteger.withDefault(0),
   );
 
+  useEffect(() => {
+    if (typeof window === "undefined" || new URL(window.location.href).searchParams.has("src")) return;
+    const preferredIndex = players.findIndex(({ title }) => title === preferredProvider);
+    if (preferredIndex >= 0) setSelectedSource(preferredIndex);
+  }, [players, preferredProvider, setSelectedSource]);
+
   useDocumentTitle(
     `Play ${props.seriesName} - ${props.seasonName} - ${episode.name} | ${siteConfig.name}`,
   );
@@ -58,17 +74,33 @@ const TvShowPlayer: React.FC<TvShowPlayerProps> = ({
 
   const tryNextPlayer = useCallback(() => {
     if (players.length < 2) return;
-    setSelectedSource((selectedSource + 1) % players.length);
-  }, [players.length, selectedSource, setSelectedSource]);
+    const nextIndex = (selectedSource + 1) % players.length;
+    setPlayerStatus("loading");
+    setSelectedSource(nextIndex);
+    setPreferredProvider(players[nextIndex].title);
+  }, [players, selectedSource, setPreferredProvider, setSelectedSource]);
+
+  const selectProvider = useCallback(
+    (index: number) => {
+      setPlayerStatus("loading");
+      setSelectedSource(index);
+      const player = players[index];
+      if (player) setPreferredProvider(player.title);
+    },
+    [players, setPreferredProvider, setSelectedSource],
+  );
 
   useEffect(() => {
     if (!seen) return;
 
-    fallbackTimer.current = setTimeout(tryNextPlayer, 20_000);
+    fallbackTimer.current = setTimeout(() => {
+      if (selectedSource === players.length - 1) setPlayerStatus("failed");
+      else tryNextPlayer();
+    }, 20_000);
     return () => {
       if (fallbackTimer.current) clearTimeout(fallbackTimer.current);
     };
-  }, [PLAYER.source, seen, tryNextPlayer]);
+  }, [PLAYER.source, seen, selectedSource, players.length, tryNextPlayer]);
 
   return (
     <>
@@ -96,12 +128,33 @@ const TvShowPlayer: React.FC<TvShowPlayerProps> = ({
               referrerPolicy="no-referrer"
               onLoad={() => {
                 if (fallbackTimer.current) clearTimeout(fallbackTimer.current);
+                setPlayerStatus("loaded");
               }}
               onError={tryNextPlayer}
               className={cn("z-10 h-full", { "pointer-events-none": idle && !mobile })}
             />
           )}
         </Card>
+        {seen && playerStatus === "loading" && (
+          <div
+            role="status"
+            className="liquid-glass absolute bottom-6 left-1/2 z-20 w-max max-w-[calc(100%-2rem)] -translate-x-1/2 rounded-full px-4 py-2 text-sm"
+          >
+            Loading {PLAYER.title}…
+          </div>
+        )}
+        {seen && playerStatus === "failed" && (
+          <div role="alert" className="liquid-glass absolute-center z-30 rounded-2xl p-5 text-center">
+            <p className="mb-3 font-semibold">This player could not be loaded.</p>
+            <button
+              type="button"
+              className="rounded-full bg-warning px-4 py-2 text-white"
+              onClick={() => selectProvider(0)}
+            >
+              Try again
+            </button>
+          </div>
+        )}
       </div>
 
       <TvShowPlayerSourceSelection
@@ -109,7 +162,7 @@ const TvShowPlayer: React.FC<TvShowPlayerProps> = ({
         onClose={sourceHandlers.close}
         players={players}
         selectedSource={selectedSource}
-        setSelectedSource={setSelectedSource}
+        setSelectedSource={selectProvider}
       />
       <TvShowPlayerEpisodeSelection
         id={id}

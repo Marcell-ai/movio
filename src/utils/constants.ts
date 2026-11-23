@@ -9,6 +9,8 @@ const IS_TEST = process.env.NODE_ENV === "test";
 const DISCLAIMER_STORAGE_KEY = "disclaimer-agreed";
 const ADS_WARNING_STORAGE_KEY = "ads-warning-seen";
 const SEARCH_HISTORY_STORAGE_KEY = "search-histories";
+const MOVIE_PROVIDER_STORAGE_KEY = "preferred-movie-provider";
+const TV_PROVIDER_STORAGE_KEY = "preferred-tv-provider";
 
 // Others
 const ITEMS_PER_PAGE = 20;
@@ -27,6 +29,8 @@ export {
   DISCLAIMER_STORAGE_KEY,
   ADS_WARNING_STORAGE_KEY,
   SEARCH_HISTORY_STORAGE_KEY,
+  MOVIE_PROVIDER_STORAGE_KEY,
+  TV_PROVIDER_STORAGE_KEY,
   ITEMS_PER_PAGE,
   SpacingClasses,
 };
