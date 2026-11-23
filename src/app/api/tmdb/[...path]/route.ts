@@ -1,5 +1,6 @@
 import { TOKEN_COOKIE, isPlausibleToken } from "@/utils/token";
 import { sanitizeParams } from "@/utils/tmdb";
+import { checkRateLimit, getClientKey } from "@/utils/rate-limit";
 import { NextRequest } from "next/server";
 
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
@@ -42,6 +43,20 @@ export const GET = async (request: NextRequest, ctx: RouteContext<"/api/tmdb/[..
   const fetchSite = request.headers.get("sec-fetch-site");
   if (fetchSite && fetchSite !== "same-origin") {
     return Response.json({ success: false, status_message: "Forbidden" }, { status: 403 });
+  }
+
+  const rateLimit = checkRateLimit(getClientKey(request, "tmdb"), 120, 60_000);
+  if (!rateLimit.allowed) {
+    return Response.json(
+      { success: false, status_message: "Too many TMDB requests" },
+      {
+        status: 429,
+        headers: {
+          "Cache-Control": "no-store",
+          "Retry-After": String(rateLimit.retryAfterSeconds),
+        },
+      },
+    );
   }
 
   const { path } = await ctx.params;

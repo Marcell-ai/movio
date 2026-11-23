@@ -1,4 +1,5 @@
 import { playerProviders } from "@/config/players";
+import { checkRateLimit, getClientKey } from "@/utils/rate-limit";
 import { NextRequest } from "next/server";
 
 type HealthResult = {
@@ -12,6 +13,20 @@ export async function GET(request: NextRequest) {
   const fetchSite = request.headers.get("sec-fetch-site");
   if (fetchSite && fetchSite !== "same-origin") {
     return Response.json({ success: false, status_message: "Forbidden" }, { status: 403 });
+  }
+
+  const rateLimit = checkRateLimit(getClientKey(request, "providers-health"), 60, 60_000);
+  if (!rateLimit.allowed) {
+    return Response.json(
+      { success: false, status_message: "Too many health requests" },
+      {
+        status: 429,
+        headers: {
+          "Cache-Control": "no-store",
+          "Retry-After": String(rateLimit.retryAfterSeconds),
+        },
+      },
+    );
   }
 
   const origins = new Set<string>();

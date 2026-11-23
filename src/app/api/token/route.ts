@@ -7,11 +7,23 @@ import {
   tokenCookieOptions,
 } from "@/utils/token";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { checkRateLimit, getClientKey } from "@/utils/rate-limit";
 
 const TMDB_VALIDATE_URL = "https://api.themoviedb.org/3/authentication";
+const tokenRequestSchema = z.object({
+  token: z.string(),
+});
 
-const respond = (body: Record<string, unknown>, status = 200) =>
-  NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
+const respond = (
+  body: Record<string, unknown>,
+  status = 200,
+  headers: Record<string, string> = {},
+) =>
+  NextResponse.json(body, {
+    status,
+    headers: { "Cache-Control": "no-store", ...headers },
+  });
 
 /** Blocks other sites from setting or clearing the cookie (login CSRF). */
 const isSameOrigin = (request: NextRequest) => {
@@ -22,12 +34,20 @@ const isSameOrigin = (request: NextRequest) => {
 /** Validates the token with TMDB, then stores it in an httpOnly cookie. */
 export const POST = async (request: NextRequest) => {
   if (!isSameOrigin(request)) return respond({ error: "Forbidden." }, 403);
+  const rateLimit = checkRateLimit(getClientKey(request, "token"), 10, 60_000);
+  if (!rateLimit.allowed) {
+    return respond(
+      { error: "Too many token requests. Try again later." },
+      429,
+      { "Retry-After": String(rateLimit.retryAfterSeconds) },
+    );
+  }
   if (!request.headers.get("content-type")?.includes("application/json")) {
     return respond({ error: "Invalid request." }, 415);
   }
 
-  const body = await request.json().catch(() => null);
-  const token = cleanToken(body?.token);
+  const body = tokenRequestSchema.safeParse(await request.json().catch(() => null));
+  const token = body.success ? cleanToken(body.data.token) : "";
 
   if (!token) return respond({ error: "Paste your TMDB API Read Access Token." }, 400);
   if (looksLikeApiKey(token)) {

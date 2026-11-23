@@ -94,7 +94,6 @@ const TvShowPlayer: React.FC<TvShowPlayerProps> = ({
               src={PLAYER.source}
               title={`${PLAYER.title} video player`}
               referrerPolicy="no-referrer"
-              sandbox="allow-forms allow-scripts allow-same-origin"
               onLoad={() => {
                 if (fallbackTimer.current) clearTimeout(fallbackTimer.current);
               }}

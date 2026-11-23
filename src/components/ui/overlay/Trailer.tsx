@@ -91,7 +91,6 @@ const Trailer: React.FC<TrailerProps> = ({ videos, color = "primary" }) => {
                               title={`${trailer.name} trailer`}
                               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                               referrerPolicy="no-referrer"
-                              sandbox="allow-forms allow-scripts allow-same-origin"
                               allowFullScreen
                             />
                           )}
