@@ -85,7 +85,13 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, id, type = "movie" }) 
 
   return (
     <>
-      <IconButton icon={<Share size={20} />} variant="ghost" tooltip="Share" onPress={open} />
+      <IconButton
+        aria-label="Share"
+        icon={<Share size={20} />}
+        variant="ghost"
+        tooltip="Share"
+        onPress={open}
+      />
       <VaulDrawer open={opened} onClose={close} backdrop="blur" title="Share via">
         <div className="space-y-8 px-6">
           <div className="grid grid-cols-4 gap-x-5 gap-y-3 md:gap-x-10 md:gap-y-5">

@@ -138,6 +138,7 @@ const Disclaimer: React.FC = () => {
 
         <ModalFooter className="justify-center">
           <Button
+            aria-live="polite"
             className={cn(isButtonDisabled && "pointer-events-auto cursor-not-allowed")}
             isDisabled={isButtonDisabled}
             color={isButtonDisabled ? "danger" : "primary"}

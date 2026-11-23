@@ -97,6 +97,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ isLoading, onSearchSubmit, 
                 transition={{ duration: 0.3 }}
               >
                 <Button
+                  aria-label="Submit search"
                   isLoading={isLoading}
                   isIconOnly={mobile}
                   type="submit"
@@ -136,6 +137,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ isLoading, onSearchSubmit, 
                         startContent={<History />}
                         endContent={
                           <Button
+                            aria-label={`Remove ${history} from search history`}
                             isIconOnly
                             variant="light"
                             size="sm"

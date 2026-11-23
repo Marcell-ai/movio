@@ -30,7 +30,13 @@ const ThemeSwitchDropdown = () => {
       }}
     >
       <DropdownTrigger>
-        <Button isIconOnly variant="light" color={color} className="p-2">
+        <Button
+          isIconOnly
+          aria-label={`Theme: ${theme ?? "system"}`}
+          variant="light"
+          color={color}
+          className="p-2"
+        >
           {themeIcon}
         </Button>
       </DropdownTrigger>

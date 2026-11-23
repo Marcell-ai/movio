@@ -19,7 +19,12 @@ const IconButton: React.FC<IconButtonProps> = ({
 }) => {
   return (
     <Tooltip isDisabled={!tooltip} content={tooltip} {...tooltipProps}>
-      <Button as={as || (props.href ? Link : "button")} isIconOnly {...props}>
+      <Button
+        as={as || (props.href ? Link : "button")}
+        isIconOnly
+        aria-label={props["aria-label"] ?? tooltip}
+        {...props}
+      >
         {typeof icon === "string" ? <Icon icon={icon} fontSize={iconSize} /> : icon}
       </Button>
     </Tooltip>

@@ -18,6 +18,7 @@ const BackToTopButton: React.FC = () => {
   return (
     <div className={cn("fixed bottom-20 right-4 z-9999 transition-opacity md:bottom-4")}>
       <IconButton
+        aria-label="Back to top"
         onPress={scrollToTop}
         icon={<MdKeyboardArrowUp size={24} />}
         variant="shadow"

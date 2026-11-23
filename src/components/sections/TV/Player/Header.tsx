@@ -24,12 +24,13 @@ const TvShowPlayerHeader: React.FC<TvShowPlayerHeaderProps> = ({
 }) => {
   return (
     <div
-      aria-hidden={hidden ? true : undefined}
-      inert={hidden || undefined}
       className={cn(
         "absolute top-0 z-40 flex h-28 w-full items-start justify-between gap-4",
         "liquid-glass top-2! mx-2 h-20 w-[calc(100%-1rem)] rounded-2xl p-2 text-white transition-opacity md:mx-4 md:w-[calc(100%-2rem)] md:p-4",
-        { "opacity-0": hidden },
+        {
+          "pointer-events-none opacity-0 focus-within:pointer-events-auto focus-within:opacity-100":
+            hidden,
+        },
       )}
     >
       <ActionButton type="tv" label="Back" href={`/tv/${id}`}>

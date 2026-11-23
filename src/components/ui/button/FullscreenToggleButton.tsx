@@ -15,6 +15,7 @@ const FullscreenToggleButton: React.FC = () => {
   if (!pwaInstalled)
     return (
       <IconButton
+        aria-label={tooltip}
         tooltip={tooltip}
         tooltipProps={{ placement: "left" }}
         className="p-2"

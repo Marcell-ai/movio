@@ -70,6 +70,7 @@ const Carousel = ({
               })}
             >
               <IconButton
+                aria-label="Previous item"
                 onPress={scrollPrev}
                 size="lg"
                 radius="none"
@@ -86,6 +87,7 @@ const Carousel = ({
               })}
             >
               <IconButton
+                aria-label="Next item"
                 onPress={scrollNext}
                 size="lg"
                 radius="none"

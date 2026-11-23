@@ -30,6 +30,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({
   }, [text, copiedLabel]);
 
   const buttonProps: IconButtonProps = {
+    "aria-label": copied ? "Copied to clipboard" : "Copy to clipboard",
     onClick: handleCopy,
     isDisabled: copied,
     radius: "full",

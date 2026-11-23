@@ -54,6 +54,7 @@ const Trailer: React.FC<TrailerProps> = ({ videos, color = "primary" }) => {
                   <>
                     <div className={clsx("absolute z-10 md:-translate-x-5")}>
                       <IconButton
+                        aria-label="Previous trailer"
                         isDisabled={!canScrollPrev}
                         onPress={scrollPrev}
                         size="sm"
@@ -64,6 +65,7 @@ const Trailer: React.FC<TrailerProps> = ({ videos, color = "primary" }) => {
                     </div>
                     <div className={clsx("absolute z-10 place-self-end md:translate-x-5")}>
                       <IconButton
+                        aria-label="Next trailer"
                         isDisabled={!canScrollNext}
                         onPress={scrollNext}
                         size="sm"
