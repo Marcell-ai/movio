@@ -119,6 +119,27 @@
       radial-gradient(circle at 20% 0%, rgb(0 110 238 / 8%), transparent 38rem),
       radial-gradient(circle at 100% 35%, rgb(245 165 36 / 5%), transparent 32rem);
     background-attachment: fixed;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: rgb(0 110 238 / 35%);
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 16%);
+    background-clip: padding-box;
   }
 
   [role="dialog"] {

@@ -66,7 +66,7 @@ const PosterCard: React.FC<PosterCardProps> = ({ type, item, variant = "full" })
           {variant === "full" && (
             <div
               className={cn(
-                "group motion-preset-focus relative aspect-2/3 overflow-hidden rounded-lg border-[3px] border-transparent text-white transition-colors",
+                "group motion-preset-focus relative aspect-2/3 overflow-hidden rounded-2xl border border-white/10 text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(0,0,0,0.38)]",
                 ACCENT[type].cardBorder,
               )}
             >
@@ -115,7 +115,7 @@ const PosterCard: React.FC<PosterCardProps> = ({ type, item, variant = "full" })
               isHoverable
               fullWidth
               shadow="md"
-              className="liquid-glass group bg-secondary-background/55 h-full"
+              className="liquid-glass group h-full bg-secondary-background/55 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_20px_45px_rgba(0,0,0,0.32)]"
             >
               <CardHeader className="flex items-center justify-center pb-0">
                 <div className="relative size-full">

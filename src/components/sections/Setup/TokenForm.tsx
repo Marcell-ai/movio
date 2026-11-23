@@ -61,7 +61,10 @@ const TokenForm: React.FC<TokenFormProps> = ({ hasToken, next, rejected }) => {
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col items-center justify-center gap-6 px-4 py-10">
       <BrandLogo animate />
-      <Card shadow="md" className="bg-secondary-background w-full">
+      <Card
+        shadow="lg"
+        className="liquid-glass w-full rounded-[2rem] border-white/10 bg-secondary-background/65"
+      >
         <CardHeader className="flex flex-col items-start gap-1 px-6 pt-6">
           <h1 className="text-xl font-bold">
             {hasToken ? "Change your TMDB token" : "Connect your TMDB account"}

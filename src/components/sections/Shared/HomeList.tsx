@@ -39,15 +39,24 @@ const HomeList: React.FC<HomeListProps> = ({ type, query, name, param }) => {
           <Skeleton className="h-[250px] rounded-lg md:h-[300px]" />
         </div>
       ) : (
-        <div className="z-3 flex flex-col gap-2">
-          <div className="flex grow items-center justify-between">
-            <SectionTitle color={ACCENT[type].color}>{name}</SectionTitle>
+        <div className="z-3 flex flex-col gap-3">
+          <div className="flex grow items-end justify-between border-b border-white/6 pb-3">
+            <SectionTitle
+              color={ACCENT[type].color}
+              classNames={{
+                container: "gap-3",
+                indicator: "h-7 w-1",
+                title: "text-xl tracking-[-0.02em] md:text-2xl",
+              }}
+            >
+              {name}
+            </SectionTitle>
             <Link
               size="sm"
               href={`/discover?type=${param}${type === "tv" ? "&content=tv" : ""}`}
               isBlock
               color="foreground"
-              className="rounded-full"
+              className="rounded-full px-3 text-xs tracking-wide uppercase"
             >
               See All &gt;
             </Link>

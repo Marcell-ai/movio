@@ -15,7 +15,7 @@ const BottomNavbar = () => {
     show && (
       <>
         <div className="pt-20 md:hidden" />
-        <div className="liquid-glass fixed bottom-2 left-2 z-50 block h-fit w-[calc(100%-1rem)] translate-y-px rounded-2xl border-white/10 py-2 md:hidden">
+        <div className="liquid-glass fixed bottom-2 left-2 z-50 block h-fit w-[calc(100%-1rem)] translate-y-px rounded-[1.35rem] border-white/10 py-2 shadow-[0_16px_50px_rgba(0,0,0,0.38)] md:hidden">
           <div className="mx-auto grid h-full max-w-lg grid-cols-5">
             {siteConfig.navItems.map((item) => {
               const isActive = pathName === item.href;

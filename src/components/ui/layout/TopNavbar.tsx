@@ -29,7 +29,7 @@ const TopNavbar = () => {
       position="sticky"
       maxWidth="full"
       classNames={{ wrapper: "px-2 md:px-4" }}
-      className={cn("liquid-glass inset-x-2 top-2 h-min rounded-2xl border-white/10 bg-transparent md:inset-x-4", {
+      className={cn("liquid-glass inset-x-2 top-2 h-16 rounded-2xl border-white/10 bg-transparent md:inset-x-4", {
         "bg-background/70": show,
       })}
     >
