@@ -84,7 +84,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ content }) => {
   const title = getTitle(item, content);
   const date = getDate(item, content);
   const year = date ? new Date(date).getFullYear() : "";
-  const backdrop = getImageUrl(item.backdrop_path, "backdrop", true);
+  const backdrop = getImageUrl(item.backdrop_path, "backdrop");
   const match = Math.round(item.vote_average * 10);
 
   return (

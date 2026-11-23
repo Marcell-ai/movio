@@ -11,6 +11,7 @@ import { Icon } from "@iconify/react";
 import { useDisclosure, useHover } from "@mantine/hooks";
 import Link from "next/link";
 import { useCallback } from "react";
+import { useState } from "react";
 import { Movie } from "tmdb-ts/dist/types";
 import { useLongPress } from "use-long-press";
 import MovieHoverCard from "../Movie/Cards/Hover";
@@ -37,6 +38,8 @@ const PosterCard: React.FC<PosterCardProps> = ({ type, item, variant = "full" })
   const { title, date } = getMeta(type, item);
   const releaseYear = new Date(date).getFullYear();
   const posterImage = getImageUrl(item.poster_path);
+  const [imageFailed, setImageFailed] = useState(false);
+  const displayedPoster = imageFailed ? "/poster-placeholder.svg" : posterImage;
   const HoverCard = type === "movie" ? MovieHoverCard : TvShowHoverCard;
   const { mobile } = useBreakpoints();
   const { startVibration } = useDeviceVibration();
@@ -98,9 +101,11 @@ const PosterCard: React.FC<PosterCardProps> = ({ type, item, variant = "full" })
               </div>
               <Image
                 alt={title}
-                src={posterImage}
+                src={displayedPoster}
                 loading="lazy"
                 decoding="async"
+                fetchPriority="low"
+                onError={() => setImageFailed(true)}
                 radius="none"
                 className="z-0 aspect-2/3 h-[250px] object-cover object-center transition group-hover:scale-110 md:h-[300px]"
                 classNames={{
@@ -143,8 +148,10 @@ const PosterCard: React.FC<PosterCardProps> = ({ type, item, variant = "full" })
                       alt={title}
                       loading="lazy"
                       decoding="async"
+                      fetchPriority="low"
                       className="aspect-2/3 rounded-lg object-cover object-center group-hover:scale-110"
-                      src={posterImage}
+                      src={displayedPoster}
+                      onError={() => setImageFailed(true)}
                     />
                   </div>
                 </div>

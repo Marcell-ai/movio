@@ -22,7 +22,7 @@ describe("helpers", () => {
 
   it("uses HTTPS and type-specific TMDB image sizes", () => {
     expect(getImageUrl("/poster.jpg", "poster")).toBe(
-      "https://image.tmdb.org/t/p/w342/poster.jpg",
+      "https://image.tmdb.org/t/p/w185/poster.jpg",
     );
     expect(getImageUrl("/backdrop.jpg", "backdrop")).toBe(
       "https://image.tmdb.org/t/p/w780/backdrop.jpg",

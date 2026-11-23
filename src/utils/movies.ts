@@ -113,10 +113,10 @@ export const getImageUrl = (
       ? "w780"
       : type === "avatar"
         ? "w185"
-        : "w342";
+        : "w185";
   const fallback =
     type === "poster"
-      ? "https://dancyflix.com/placeholder.png"
+      ? "/poster-placeholder.svg"
       : type === "backdrop"
         ? "https://wallpapercave.com/wp/wp1945939.jpg"
         : "";

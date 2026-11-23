@@ -66,6 +66,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="preconnect" href="https://autoembed.co" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://vidsrc.to" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://image.tmdb.org" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="//image.tmdb.org" />
         <meta httpEquiv="x-dns-prefetch-control" content="on" />
       </head>
       <body className={cn("bg-background min-h-dvh antialiased select-none", Poppins.className)}>
