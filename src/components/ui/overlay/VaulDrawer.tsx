@@ -57,7 +57,7 @@ export default function VaulDrawer({
         />
         <Drawer.Content
           className={cn(
-            "bg-secondary-background text-foreground fixed z-9999 place-self-center outline-hidden",
+            "liquid-glass bg-secondary-background/75 text-foreground fixed z-9999 place-self-center outline-hidden",
             classNames?.contentWrapper,
             {
               "right-0 bottom-0 left-0 mt-24 max-h-[97%] w-full rounded-t-2xl":

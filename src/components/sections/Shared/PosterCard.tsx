@@ -113,7 +113,7 @@ const PosterCard: React.FC<PosterCardProps> = ({ type, item, variant = "full" })
               isHoverable
               fullWidth
               shadow="md"
-              className="group bg-secondary-background h-full"
+              className="liquid-glass group bg-secondary-background/55 h-full"
             >
               <CardHeader className="flex items-center justify-center pb-0">
                 <div className="relative size-full">

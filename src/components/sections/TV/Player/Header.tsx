@@ -28,7 +28,7 @@ const TvShowPlayerHeader: React.FC<TvShowPlayerHeaderProps> = ({
       inert={hidden || undefined}
       className={cn(
         "absolute top-0 z-40 flex h-28 w-full items-start justify-between gap-4",
-        "bg-linear-to-b from-black/80 to-transparent p-2 text-white transition-opacity md:p-4",
+        "liquid-glass top-2! mx-2 h-20 w-[calc(100%-1rem)] rounded-2xl p-2 text-white transition-opacity md:mx-4 md:w-[calc(100%-2rem)] md:p-4",
         { "opacity-0": hidden },
       )}
     >
