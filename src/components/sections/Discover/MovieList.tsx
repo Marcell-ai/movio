@@ -8,7 +8,7 @@ import { notFound } from "next/navigation";
 import { memo, useEffect } from "react";
 import PosterCard from "../Shared/PosterCard";
 import useDiscoverFilters from "@/hooks/useDiscoverFilters";
-import useFetchDiscoverMovies from "@/hooks/useFetchDiscoverMovies";
+import fetchDiscoverMovies from "@/hooks/useFetchDiscoverMovies";
 import { DiscoverMoviesFetchQueryType } from "@/types/movie";
 import Loop from "@/components/ui/other/Loop";
 import PosterCardSkeleton from "@/components/ui/other/PosterCardSkeleton";
@@ -22,7 +22,7 @@ const MovieDiscoverList = () => {
     useInfiniteQuery({
       queryKey: ["discover-movies", queryType, genresString],
       queryFn: ({ pageParam }) =>
-        useFetchDiscoverMovies({
+        fetchDiscoverMovies({
           page: pageParam,
           type: queryType as DiscoverMoviesFetchQueryType,
           genres: genresString,
@@ -36,7 +36,7 @@ const MovieDiscoverList = () => {
     if (inViewport && !isPending) {
       fetchNextPage();
     }
-  }, [inViewport]);
+  }, [fetchNextPage, inViewport, isPending]);
 
   if (status === "error") return notFound();
 

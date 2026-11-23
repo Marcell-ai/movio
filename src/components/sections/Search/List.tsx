@@ -10,7 +10,7 @@ import { getLoadingLabel } from "@/utils/movies";
 import { Spinner } from "@heroui/react";
 import { useInViewport } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Movie, Search, TV } from "tmdb-ts/dist/types";
 import PosterCard from "../Shared/PosterCard";
 import SearchFilter from "./Filter";
@@ -56,8 +56,7 @@ const SearchList = () => {
     queryClient.removeQueries({ queryKey: ["search-list"] });
   }, [content]);
 
-  const renderSearchResults = useMemo(() => {
-    return () => {
+  const renderSearchResults = () => {
       if (isEmpty(data?.pages[0].results)) {
         return (
           <h5 className="mt-56 text-center text-xl">
@@ -97,8 +96,7 @@ const SearchList = () => {
           </div>
         </>
       );
-    };
-  }, [content, data?.pages, submittedSearchQuery]);
+  };
 
   return (
     <div className="flex flex-col items-center gap-8">
