@@ -5,7 +5,7 @@ import { Card, Skeleton } from "@heroui/react";
 import { useDisclosure, useDocumentTitle, useIdle, useLocalStorage } from "@mantine/hooks";
 import dynamic from "next/dynamic";
 import { parseAsInteger, useQueryState } from "nuqs";
-import { memo, useMemo } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { Episode, TvShowDetails } from "tmdb-ts";
 import useBreakpoints from "@/hooks/useBreakpoints";
 import { ADS_WARNING_STORAGE_KEY, SpacingClasses } from "@/utils/constants";
@@ -54,6 +54,21 @@ const TvShowPlayer: React.FC<TvShowPlayerProps> = ({
   );
 
   const PLAYER = useMemo(() => players[selectedSource] || players[0], [players, selectedSource]);
+  const fallbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const tryNextPlayer = useCallback(() => {
+    if (players.length < 2) return;
+    setSelectedSource((selectedSource + 1) % players.length);
+  }, [players.length, selectedSource, setSelectedSource]);
+
+  useEffect(() => {
+    if (!seen) return;
+
+    fallbackTimer.current = setTimeout(tryNextPlayer, 20_000);
+    return () => {
+      if (fallbackTimer.current) clearTimeout(fallbackTimer.current);
+    };
+  }, [PLAYER.source, seen, tryNextPlayer]);
 
   return (
     <>
@@ -80,6 +95,10 @@ const TvShowPlayer: React.FC<TvShowPlayerProps> = ({
               title={`${PLAYER.title} video player`}
               referrerPolicy="no-referrer"
               sandbox="allow-forms allow-scripts allow-same-origin"
+              onLoad={() => {
+                if (fallbackTimer.current) clearTimeout(fallbackTimer.current);
+              }}
+              onError={tryNextPlayer}
               className={cn("z-10 h-full", { "pointer-events-none": idle && !mobile })}
             />
           )}
