@@ -114,6 +114,8 @@ export const EpisodeListCard: React.FC<EpisodeCardProps> = ({
         <Image
           alt={episode.name}
           src={imageUrl}
+          loading="lazy"
+          decoding="async"
           height={120}
           width={mobile ? 180 : 220}
           className="rounded-r-none object-cover"

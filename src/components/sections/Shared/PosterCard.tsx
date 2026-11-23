@@ -99,6 +99,8 @@ const PosterCard: React.FC<PosterCardProps> = ({ type, item, variant = "full" })
               <Image
                 alt={title}
                 src={posterImage}
+                loading="lazy"
+                decoding="async"
                 radius="none"
                 className="z-0 aspect-2/3 h-[250px] object-cover object-center transition group-hover:scale-110 md:h-[300px]"
                 classNames={{
@@ -139,6 +141,8 @@ const PosterCard: React.FC<PosterCardProps> = ({ type, item, variant = "full" })
                     <Image
                       isBlurred
                       alt={title}
+                      loading="lazy"
+                      decoding="async"
                       className="aspect-2/3 rounded-lg object-cover object-center group-hover:scale-110"
                       src={posterImage}
                     />

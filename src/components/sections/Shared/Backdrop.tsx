@@ -36,6 +36,9 @@ const BackdropSection: React.FC<BackdropSectionProps> = ({ title, backdropPath, 
       <Image
         radius="none"
         alt={title}
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
         className="z-0 h-[35vh] w-screen object-cover object-center md:h-[50vh] lg:h-[70vh]"
         src={backdropImage}
       />

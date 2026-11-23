@@ -34,6 +34,8 @@ const OverviewSection: React.FC<OverviewSectionProps> = ({ movie }) => {
           isBlurred
           shadow="md"
           alt={fullTitle}
+          loading="lazy"
+          decoding="async"
           classNames={{
             wrapper: "w-52 max-h-min aspect-2/3 hidden md:block",
           }}

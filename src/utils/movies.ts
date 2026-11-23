@@ -107,14 +107,20 @@ export const getImageUrl = (
   type: "poster" | "backdrop" | "title" | "avatar" = "poster",
   fullSize?: boolean,
 ): string => {
-  const size = fullSize ? "original" : "w500";
+  const size = fullSize
+    ? "original"
+    : type === "backdrop"
+      ? "w780"
+      : type === "avatar"
+        ? "w185"
+        : "w342";
   const fallback =
     type === "poster"
       ? "https://dancyflix.com/placeholder.png"
       : type === "backdrop"
         ? "https://wallpapercave.com/wp/wp1945939.jpg"
         : "";
-  return path ? `http://image.tmdb.org/t/p/${size}/${path}` : fallback;
+  return path ? `https://image.tmdb.org/t/p/${size}/${path.replace(/^\/+/, "")}` : fallback;
 };
 
 /**

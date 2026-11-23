@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { cn, formatNumber, isEmpty } from "@/utils/helpers";
+import { getImageUrl } from "@/utils/movies";
 
 describe("helpers", () => {
   it("merges conflicting Tailwind classes", () => {
@@ -17,5 +18,14 @@ describe("helpers", () => {
     expect(formatNumber(1_000)).toBe("1k");
     expect(formatNumber(1_250, { decimals: 1 })).toBe("1.3k");
     expect(formatNumber(-1_000_000, { uppercase: true })).toBe("-1M");
+  });
+
+  it("uses HTTPS and type-specific TMDB image sizes", () => {
+    expect(getImageUrl("/poster.jpg", "poster")).toBe(
+      "https://image.tmdb.org/t/p/w342/poster.jpg",
+    );
+    expect(getImageUrl("/backdrop.jpg", "backdrop")).toBe(
+      "https://image.tmdb.org/t/p/w780/backdrop.jpg",
+    );
   });
 });

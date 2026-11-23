@@ -4,10 +4,16 @@ import { PropsWithChildren, Suspense } from "react";
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import dynamic from "next/dynamic";
 import { AppProgressProvider as ProgressProvider } from "@bprogress/next";
 import { usePathname, useRouter } from "next/navigation";
 import useDiscoverFilters from "@/hooks/useDiscoverFilters";
+
+const ReactQueryDevtools = dynamic(
+  () =>
+    import("@tanstack/react-query-devtools").then(({ ReactQueryDevtools }) => ReactQueryDevtools),
+  { ssr: false },
+);
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,9 +59,11 @@ export default function Providers({ children }: PropsWithChildren) {
           </Suspense>
         </NextThemesProvider>
       </HeroUIProvider>
-      <div className="hidden md:block">
-        <ReactQueryDevtools initialIsOpen={false} />
-      </div>
+      {process.env.NODE_ENV === "development" && (
+        <div className="hidden md:block">
+          <ReactQueryDevtools initialIsOpen={false} />
+        </div>
+      )}
     </QueryClientProvider>
   );
 }
