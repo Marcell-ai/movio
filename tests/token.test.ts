@@ -30,6 +30,20 @@ describe("token route", () => {
     expect(response.status).toBe(403);
   });
 
+  it("rejects mismatched Origin headers without sec-fetch-site", async () => {
+    const response = await POST(
+      new NextRequest("http://localhost/api/token", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          origin: "https://evil.example",
+        },
+        body: JSON.stringify({ token: "valid.token" }),
+      }),
+    );
+    expect(response.status).toBe(403);
+  });
+
   it("rejects invalid JSON token payloads", async () => {
     const response = await POST(request("POST", { token: "" }));
     expect(response.status).toBe(400);

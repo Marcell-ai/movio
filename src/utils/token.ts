@@ -40,7 +40,8 @@ export const TOKEN_COOKIE_MAX_AGE = 60 * 60 * 24 * 400;
 
 /** Plain HTTP (e.g. a home server without TLS) can't store `Secure` cookies, so only set it on HTTPS. */
 export const isSecureRequest = (protocol: string, forwardedProto: string | null) =>
-  protocol === "https:" || forwardedProto === "https";
+  protocol === "https:" ||
+  forwardedProto?.split(",")[0].trim().toLowerCase() === "https";
 
 /** One definition of the cookie so saving it and renewing it can never drift apart. */
 export const tokenCookieOptions = (secure: boolean) => ({

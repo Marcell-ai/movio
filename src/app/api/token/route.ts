@@ -29,7 +29,17 @@ const respond = (
 /** Blocks other sites from setting or clearing the cookie (login CSRF). */
 const isSameOrigin = (request: NextRequest) => {
   const site = request.headers.get("sec-fetch-site");
-  return !site || site === "same-origin";
+  if (site) return site === "same-origin";
+
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+
+  try {
+    const originUrl = new URL(origin);
+    return originUrl.host === request.nextUrl.host;
+  } catch {
+    return false;
+  }
 };
 
 /** Validates the token with TMDB, then stores it in an httpOnly cookie. */

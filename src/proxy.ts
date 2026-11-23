@@ -12,6 +12,12 @@ import { NextResponse, type NextRequest } from "next/server";
  */
 export function proxy(request: NextRequest) {
   const token = request.cookies.get(TOKEN_COOKIE)?.value;
+  const responseHeaders = {
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+  };
 
   if (token) {
     const response = NextResponse.next();
@@ -24,6 +30,7 @@ export function proxy(request: NextRequest) {
         ),
       );
     }
+    Object.entries(responseHeaders).forEach(([key, value]) => response.headers.set(key, value));
     return response;
   }
 
@@ -32,7 +39,9 @@ export function proxy(request: NextRequest) {
   url.pathname = "/setup";
   url.search = "";
   if (target !== "/") url.searchParams.set("next", target);
-  return NextResponse.redirect(url);
+  const redirect = NextResponse.redirect(url);
+  Object.entries(responseHeaders).forEach(([key, value]) => redirect.headers.set(key, value));
+  return redirect;
 }
 
 export const config = {

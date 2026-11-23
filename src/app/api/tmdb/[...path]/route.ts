@@ -44,6 +44,16 @@ export const GET = async (request: NextRequest, ctx: RouteContext<"/api/tmdb/[..
   if (fetchSite && fetchSite !== "same-origin") {
     return Response.json({ success: false, status_message: "Forbidden" }, { status: 403 });
   }
+  const origin = request.headers.get("origin");
+  if (origin) {
+    try {
+      if (new URL(origin).host !== request.nextUrl.host) {
+        return Response.json({ success: false, status_message: "Forbidden" }, { status: 403 });
+      }
+    } catch {
+      return Response.json({ success: false, status_message: "Forbidden" }, { status: 403 });
+    }
+  }
 
   const rateLimit = await checkRateLimit(getClientKey(request, "tmdb"), 120, 60_000);
   if (!rateLimit.allowed) {
