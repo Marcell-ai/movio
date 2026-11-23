@@ -38,7 +38,10 @@ const unauthorized = (message: string) =>
 const notFound = () =>
   Response.json({ success: false, status_message: "Not found" }, { status: 404 });
 
-export const GET = async (request: NextRequest, ctx: RouteContext<"/api/tmdb/[...path]">) => {
+export const GET = async (
+  request: NextRequest,
+  ctx: { params: Promise<{ path: string[] }> },
+) => {
   // block other sites from using this route
   const fetchSite = request.headers.get("sec-fetch-site");
   if (fetchSite && fetchSite !== "same-origin") {
