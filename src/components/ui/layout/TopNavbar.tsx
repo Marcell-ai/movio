@@ -28,9 +28,7 @@ const TopNavbar = () => {
       position="sticky"
       maxWidth="full"
       classNames={{ wrapper: "px-2 md:px-4" }}
-      className={cn("liquid-glass inset-x-2 top-2 h-16 rounded-2xl border-white/10 md:inset-x-4", {
-        "bg-background/70": show,
-      })}
+      className="inset-x-2 top-2 h-16 border-none bg-transparent md:inset-x-4"
     >
       {!show && (
         <div
@@ -39,7 +37,13 @@ const TopNavbar = () => {
         />
       )}
       <NavbarBrand>
-        {show ? <BrandLogo /> : <BackButton href={tv ? "/?content=tv" : "/"} />}
+        {show ? (
+          <div className="liquid-glass flex h-11 items-center rounded-full border-white/10 px-4">
+            <BrandLogo />
+          </div>
+        ) : (
+          <BackButton href={tv ? "/?content=tv" : "/"} />
+        )}
       </NavbarBrand>
       <NavbarContent className="hidden md:flex" justify="center">
         <nav className="liquid-glass flex items-center gap-1 rounded-full border-white/10 px-1.5 py-1">
