@@ -1,0 +1,84 @@
+import {
+  TOKEN_COOKIE,
+  cleanToken,
+  isPlausibleToken,
+  isSecureRequest,
+  looksLikeApiKey,
+  tokenCookieOptions,
+} from "@/utils/token";
+import { NextRequest, NextResponse } from "next/server";
+
+const TMDB_VALIDATE_URL = "https://api.themoviedb.org/3/authentication";
+
+const respond = (body: Record<string, unknown>, status = 200) =>
+  NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
+
+/** Blocks other sites from setting or clearing the cookie (login CSRF). */
+const isSameOrigin = (request: NextRequest) => {
+  const site = request.headers.get("sec-fetch-site");
+  return !site || site === "same-origin";
+};
+
+/** Validates the token with TMDB, then stores it in an httpOnly cookie. */
+export const POST = async (request: NextRequest) => {
+  if (!isSameOrigin(request)) return respond({ error: "Forbidden." }, 403);
+  if (!request.headers.get("content-type")?.includes("application/json")) {
+    return respond({ error: "Invalid request." }, 415);
+  }
+
+  const body = await request.json().catch(() => null);
+  const token = cleanToken(body?.token);
+
+  if (!token) return respond({ error: "Paste your TMDB API Read Access Token." }, 400);
+  if (looksLikeApiKey(token)) {
+    return respond(
+      {
+        error:
+          "That looks like the short API Key. Use the much longer “API Read Access Token” instead (it usually starts with eyJ).",
+      },
+      400,
+    );
+  }
+  if (!isPlausibleToken(token)) {
+    return respond({ error: "That doesn’t look like a valid TMDB access token." }, 400);
+  }
+
+  let upstream: Response;
+  try {
+    upstream = await fetch(TMDB_VALIDATE_URL, {
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+      cache: "no-store",
+      signal: AbortSignal.timeout(8000),
+    });
+  } catch {
+    return respond(
+      { error: "Couldn’t reach TMDB to check the token. Try again in a moment." },
+      502,
+    );
+  }
+
+  if (upstream.status === 401) {
+    return respond({ error: "TMDB rejected this token. Check it and try again." }, 401);
+  }
+  if (!upstream.ok) {
+    return respond({ error: `TMDB returned an unexpected error (${upstream.status}).` }, 502);
+  }
+
+  const response = respond({ ok: true });
+  response.cookies.set(
+    TOKEN_COOKIE,
+    token,
+    tokenCookieOptions(
+      isSecureRequest(request.nextUrl.protocol, request.headers.get("x-forwarded-proto")),
+    ),
+  );
+  return response;
+};
+
+/** Removes the saved token. */
+export const DELETE = async (request: NextRequest) => {
+  if (!isSameOrigin(request)) return respond({ error: "Forbidden." }, 403);
+  const response = respond({ ok: true });
+  response.cookies.delete(TOKEN_COOKIE);
+  return response;
+};

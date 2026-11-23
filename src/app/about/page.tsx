@@ -1,0 +1,26 @@
+import { siteConfig } from "@/config/site";
+import { Metadata } from "next/dist/lib/metadata/types/metadata-interface";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+import { NextPage } from "next";
+import TokenSettings from "@/components/sections/About/TokenSettings";
+const FAQ = dynamic(() => import("@/components/sections/About/FAQ"));
+
+export const metadata: Metadata = {
+  title: `About | ${siteConfig.name}`,
+};
+
+const AboutPage: NextPage = () => {
+  return (
+    <div className="flex w-full justify-center">
+      <div className="flex w-full max-w-2xl flex-col gap-5">
+        <Suspense>
+          <FAQ />
+        </Suspense>
+        <TokenSettings />
+      </div>
+    </div>
+  );
+};
+
+export default AboutPage;
