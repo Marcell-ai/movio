@@ -27,5 +27,11 @@ describe("helpers", () => {
     expect(getImageUrl("/backdrop.jpg", "backdrop")).toBe(
       "https://image.tmdb.org/t/p/w780/backdrop.jpg",
     );
+    expect(getImageUrl("/backdrop.jpg", "backdrop", true)).toBe(
+      "https://image.tmdb.org/t/p/w1280/backdrop.jpg",
+    );
+    expect(getImageUrl("/poster.jpg", "poster", true)).toBe(
+      "https://image.tmdb.org/t/p/w342/poster.jpg",
+    );
   });
 });

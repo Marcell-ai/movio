@@ -108,7 +108,11 @@ export const getImageUrl = (
   fullSize?: boolean,
 ): string => {
   const size = fullSize
-    ? "original"
+    ? type === "backdrop"
+      ? "w1280"
+      : type === "poster"
+        ? "w342"
+        : "original"
     : type === "backdrop"
       ? "w780"
       : type === "avatar"
@@ -118,7 +122,7 @@ export const getImageUrl = (
     type === "poster"
       ? "/poster-placeholder.svg"
       : type === "backdrop"
-        ? "https://wallpapercave.com/wp/wp1945939.jpg"
+        ? "/backdrop-placeholder.svg"
         : "";
   return path ? `https://image.tmdb.org/t/p/${size}/${path.replace(/^\/+/, "")}` : fallback;
 };

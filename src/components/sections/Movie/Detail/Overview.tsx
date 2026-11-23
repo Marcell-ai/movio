@@ -14,6 +14,7 @@ import SectionTitle from "@/components/ui/other/SectionTitle";
 import Trailer from "@/components/ui/overlay/Trailer";
 import { Calendar, Clock } from "@/utils/icons";
 import Link from "next/link";
+import { useState } from "react";
 
 interface OverviewSectionProps {
   movie: AppendToResponse<MovieDetails, "videos"[], "movie">;
@@ -21,7 +22,8 @@ interface OverviewSectionProps {
 
 const OverviewSection: React.FC<OverviewSectionProps> = ({ movie }) => {
   const releaseYear = new Date(movie.release_date).getFullYear();
-  const posterImage = getImageUrl(movie.poster_path);
+  const posterImage = getImageUrl(movie.poster_path, "poster", true);
+  const [posterFailed, setPosterFailed] = useState(false);
   const title = mutateMovieTitle(movie);
   const fullTitle = title;
 
@@ -34,13 +36,15 @@ const OverviewSection: React.FC<OverviewSectionProps> = ({ movie }) => {
           isBlurred
           shadow="md"
           alt={fullTitle}
-          loading="lazy"
+          loading="eager"
+          fetchPriority="high"
           decoding="async"
           classNames={{
             wrapper: "w-52 max-h-min aspect-2/3 hidden md:block",
           }}
           className="object-cover object-center"
-          src={posterImage}
+          src={posterFailed ? "/poster-placeholder.svg" : posterImage}
+          onError={() => setPosterFailed(true)}
         />
 
         <div className="flex flex-col gap-8">
