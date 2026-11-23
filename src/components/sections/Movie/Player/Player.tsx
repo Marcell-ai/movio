@@ -104,6 +104,8 @@ const MoviePlayer: React.FC<MoviePlayerProps> = ({ movie, startAt }) => {
               allowFullScreen
               key={PLAYER.title}
               src={PLAYER.source}
+              loading="eager"
+              allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
               title={`${PLAYER.title} video player`}
               referrerPolicy="no-referrer"
               onLoad={() => {

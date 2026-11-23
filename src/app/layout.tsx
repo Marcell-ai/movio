@@ -59,6 +59,15 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html suppressHydrationWarning lang="en">
+      <head>
+        <link rel="preconnect" href="https://vidlink.pro" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://multiembed.mov" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.nontongo.win" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://autoembed.co" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://vidsrc.to" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://image.tmdb.org" crossOrigin="anonymous" />
+        <meta httpEquiv="x-dns-prefetch-control" content="on" />
+      </head>
       <body className={cn("bg-background min-h-dvh antialiased select-none", Poppins.className)}>
         <Suspense>
           <NuqsAdapter>
