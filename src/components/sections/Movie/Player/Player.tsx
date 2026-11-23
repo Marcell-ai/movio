@@ -59,7 +59,6 @@ const MoviePlayer: React.FC<MoviePlayerProps> = ({ movie, startAt }) => {
               src={PLAYER.source}
               title={`${PLAYER.title} video player`}
               referrerPolicy="no-referrer"
-              sandbox="allow-forms allow-scripts allow-same-origin"
               className={cn("z-10 h-full", { "pointer-events-none": idle && !mobile })}
             />
           )}
