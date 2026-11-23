@@ -22,7 +22,7 @@ const get = async <T>(path: string, params: Params = {}): Promise<T> => {
   if (response.status === 401 && typeof window !== "undefined") {
     // missing or rejected token: go to setup and come back here afterwards
     const here = window.location.pathname + window.location.search;
-    window.location.assign(`/setup?reason=invalid&next=${encodeURIComponent(here)}`);
+    window.location.replace(`/setup?reason=invalid&next=${encodeURIComponent(here)}`);
     return new Promise<T>(() => {}); // the page is navigating away, so never settle
   }
 

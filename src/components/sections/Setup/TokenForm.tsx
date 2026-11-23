@@ -6,6 +6,7 @@ import { Eye, EyeOff } from "@/utils/icons";
 import { Button, Card, CardBody, CardHeader, Input, Link } from "@heroui/react";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface TokenFormProps {
   /** a token is already saved: the form replaces it and offers to remove it */
@@ -17,6 +18,7 @@ interface TokenFormProps {
 }
 
 const TokenForm: React.FC<TokenFormProps> = ({ hasToken, next, rejected }) => {
+  const router = useRouter();
   const [token, setToken] = useState("");
   const [show, { toggle }] = useDisclosure(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +41,8 @@ const TokenForm: React.FC<TokenFormProps> = ({ hasToken, next, rejected }) => {
     try {
       await request("POST");
       // full navigation so the server sees the new cookie and cached data is dropped
-      window.location.assign(next);
+      router.push(next);
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
       setLoading(false);
@@ -51,7 +54,8 @@ const TokenForm: React.FC<TokenFormProps> = ({ hasToken, next, rejected }) => {
     setLoading(true);
     try {
       await request("DELETE");
-      window.location.assign("/setup");
+      router.push("/setup");
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
       setLoading(false);
