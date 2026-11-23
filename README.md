@@ -21,7 +21,34 @@ Movio is an open-source movie and TV discovery app built with Next.js. Browse ti
 1. Install [Bun](https://bun.sh/).
 2. Install dependencies with `bun install`.
 3. Start the development server with `bun dev` and open `http://localhost:3000`.
-4. On first launch Movio asks for your TMDB token before showing anything. Create a free account at [themoviedb.org](https://www.themoviedb.org/), open [Settings → API](https://www.themoviedb.org/settings/api), and paste the **API Read Access Token** (the long one, not the short API Key).
+4. On first launch, Movio asks for a TMDB API Read Access Token. Follow the [TMDB API token tutorial](#getting-a-tmdb-api-read-access-token) below, then paste the token into Movio.
+
+## Getting a TMDB API Read Access Token
+
+Movio uses the TMDB API catalog but does not ship a shared TMDB key. Each user supplies their own read access token.
+
+1. Go to [themoviedb.org](https://www.themoviedb.org/) and create a free account.
+2. Verify the account email address if TMDB requests it, then sign in.
+3. Open your profile menu in the top-right corner.
+4. Select **Settings**.
+5. Open **API** from the settings sidebar.
+6. If API access is not available yet, choose the option to request an API key. Use this app for the **Application Name** and describe it as a movie and TV discovery website.
+7. Complete TMDB's API application form. Personal or educational use is usually the appropriate choice for this project.
+8. After approval, return to [TMDB Settings → API](https://www.themoviedb.org/settings/api).
+9. Copy the **API Read Access Token**. It is a long JWT-style token and normally begins with `eyJ`.
+
+Then:
+
+1. Open Movio.
+2. Enter the token on the setup page.
+3. Movio validates the token with TMDB and stores it in an httpOnly cookie.
+
+### What to copy
+
+- **Use:** API Read Access Token (Bearer token)
+- **Do not use:** the short API Key, account password, or session ID
+- A read access token should not be committed to Git or added to a public `.env` file
+- To replace or remove it, open **About** in Movio or visit `/setup`
 
 There is no `.env` file to configure. Each visitor supplies their own token. It is checked with TMDB, then stored in an httpOnly cookie in that browser, so page scripts can't read it and only the app's server sends it to TMDB. It stays saved when you close the app and is renewed every time you use it, so you only enter it once. You can replace or remove it from the About page (or at `/setup`). It is lost only if you clear the site's cookies, browse in a private window, or switch between a browser and an installed copy of the app (they keep separate cookies).
 
