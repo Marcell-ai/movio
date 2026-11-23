@@ -50,7 +50,7 @@ const SearchList = () => {
     if (inViewport) {
       fetchNextPage();
     }
-  }, [inViewport]);
+  }, [fetchNextPage, inViewport]);
 
   useEffect(() => {
     queryClient.removeQueries({ queryKey: ["search-list"] });
@@ -61,7 +61,7 @@ const SearchList = () => {
         return (
           <h5 className="mt-56 text-center text-xl">
             No {content === "movie" ? "movies" : "TV series"} found with query{" "}
-            <span className="text-warning font-semibold">"{submittedSearchQuery}"</span>
+            <span className="text-warning font-semibold">&quot;{submittedSearchQuery}&quot;</span>
           </h5>
         );
       }
@@ -73,7 +73,7 @@ const SearchList = () => {
               Found{" "}
               <span className="text-success font-semibold">{data?.pages[0].total_results}</span>{" "}
               {content === "movie" ? "movies" : "TV series"} with query{" "}
-              <span className="text-warning font-semibold">"{submittedSearchQuery}"</span>
+              <span className="text-warning font-semibold">&quot;{submittedSearchQuery}&quot;</span>
             </span>
           </h5>
           <div className="movie-grid">

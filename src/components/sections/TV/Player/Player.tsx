@@ -31,7 +31,6 @@ export interface TvShowPlayerProps {
 }
 
 const TvShowPlayer: React.FC<TvShowPlayerProps> = ({
-  tv,
   id,
   episode,
   episodes,

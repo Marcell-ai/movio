@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type ColorMap = { [key: string]: number };
 type SortBy = "vibrance" | "dominance";
@@ -56,7 +56,23 @@ export const useExtractColors = (
   imageUrl: string,
   customOptions: Partial<Options> = {},
 ): UseExtractColorReturn => {
-  const options: Options = { ...defaultOptions, ...customOptions };
+  const options = useMemo<Options>(
+    () => ({
+      maxColors: customOptions.maxColors ?? defaultOptions.maxColors,
+      format: customOptions.format ?? defaultOptions.format,
+      maxSize: customOptions.maxSize ?? defaultOptions.maxSize,
+      colorSimilarityThreshold:
+        customOptions.colorSimilarityThreshold ?? defaultOptions.colorSimilarityThreshold,
+      sortBy: customOptions.sortBy ?? defaultOptions.sortBy,
+    }),
+    [
+      customOptions.colorSimilarityThreshold,
+      customOptions.format,
+      customOptions.maxColors,
+      customOptions.maxSize,
+      customOptions.sortBy,
+    ],
+  );
 
   const [colors, setColors] = useState<string[]>([]);
   const [dominantColor, setDominantColor] = useState<string | null>(null);
@@ -93,7 +109,7 @@ export const useExtractColors = (
     return () => {
       isMounted = false;
     };
-  }, [imageUrl]);
+  }, [imageUrl, options]);
 
   return { dominantColor, darkerColor, lighterColor, loading, error, colors };
 };

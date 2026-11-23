@@ -55,11 +55,11 @@ const useDiscoverFilters = () => {
         q.removeQueries({ queryKey: [key] });
       }
     });
-  }, [q]);
+  }, []);
 
   useEffect(() => {
     clearQueries();
-  }, [content, queryType, genresString]);
+  }, [clearQueries, content, genresString, queryType]);
 
   return {
     types,

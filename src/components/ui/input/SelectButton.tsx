@@ -5,16 +5,6 @@ import { useUncontrolled } from "@mantine/hooks";
 import React, { CSSProperties, PropsWithChildren, useCallback } from "react";
 import { kebabCase } from "string-ts";
 
-// for tailwind css
-[
-  "border-warning",
-  "border-primary",
-  "border-secondary",
-  "border-success",
-  "border-danger",
-  "border-default",
-];
-
 type WrapperProps = Omit<React.HTMLAttributes<HTMLDivElement>, "value" | "onChange"> &
   InputWrapperProps;
 
@@ -73,7 +63,7 @@ const SelectButton = <T extends string = string>({
       if (disabled || (_value === value && !allowDeselect)) return;
       handleChange(_value === value && allowDeselect ? null : (value as T));
     },
-    [_value, allowDeselect],
+    [_value, allowDeselect, handleChange],
   );
 
   return (
