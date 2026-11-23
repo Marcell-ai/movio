@@ -39,3 +39,38 @@ export const sanitizeParams = (searchParams: URLSearchParams): URLSearchParams |
 
   return params;
 };
+
+const RETRYABLE_STATUS = new Set([429, 500, 502, 503, 504]);
+
+const sleep = (milliseconds: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
+
+export const fetchWithRetry = async (
+  url: string,
+  init: RequestInit,
+  options: { attempts?: number; baseDelayMs?: number } = {},
+): Promise<Response> => {
+  const attempts = options.attempts ?? 3;
+  const baseDelayMs = options.baseDelayMs ?? 250;
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      const response = await fetch(url, init);
+      if (attempt === attempts || !RETRYABLE_STATUS.has(response.status)) return response;
+
+      const retryAfter = Number(response.headers.get("retry-after"));
+      const delay =
+        Number.isFinite(retryAfter) && retryAfter > 0
+          ? retryAfter * 1000
+          : baseDelayMs * 2 ** (attempt - 1);
+      await sleep(delay);
+    } catch (error) {
+      lastError = error;
+      if (attempt === attempts) throw error;
+      await sleep(baseDelayMs * 2 ** (attempt - 1));
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error("TMDB request failed");
+};

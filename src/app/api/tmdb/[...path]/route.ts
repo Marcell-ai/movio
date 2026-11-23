@@ -1,5 +1,5 @@
 import { TOKEN_COOKIE, isPlausibleToken } from "@/utils/token";
-import { sanitizeParams } from "@/utils/tmdb";
+import { fetchWithRetry, sanitizeParams } from "@/utils/tmdb";
 import { checkRateLimit, getClientKey } from "@/utils/rate-limit";
 import { NextRequest } from "next/server";
 
@@ -26,7 +26,7 @@ const ROUTES: { pattern: RegExp; ttl: number }[] = [
  * A shared CDN cache would hand cached data to visitors that have no valid token.
  */
 const cacheHeaders = (ttl: number) => ({
-  "Cache-Control": `private, max-age=${Math.min(ttl, 300)}`,
+  "Cache-Control": `private, max-age=${Math.min(ttl, 300)}, stale-while-revalidate=300`,
 });
 
 const unauthorized = (message: string) =>
@@ -74,7 +74,7 @@ export const GET = async (request: NextRequest, ctx: RouteContext<"/api/tmdb/[..
 
   let upstream: Response;
   try {
-    upstream = await fetch(`${TMDB_BASE_URL}/${endpoint}?${params}`, {
+    upstream = await fetchWithRetry(`${TMDB_BASE_URL}/${endpoint}?${params}`, {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
       signal: AbortSignal.timeout(10_000),

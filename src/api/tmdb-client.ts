@@ -26,7 +26,17 @@ const get = async <T>(path: string, params: Params = {}): Promise<T> => {
     return new Promise<T>(() => {}); // the page is navigating away, so never settle
   }
 
-  if (!response.ok) return Promise.reject(await response.json().catch(() => response.statusText));
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    const message =
+      body?.status_message ??
+      (response.status === 429
+        ? "Too many requests. Please wait a moment."
+        : response.status === 502
+          ? "TMDB is temporarily unavailable."
+          : response.statusText || "Couldn't load TMDB data.");
+    return Promise.reject(new Error(message));
+  }
   return response.json();
 };
 

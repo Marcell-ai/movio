@@ -9,6 +9,7 @@ import {
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { checkRateLimit, getClientKey } from "@/utils/rate-limit";
+import { fetchWithRetry } from "@/utils/tmdb";
 
 const TMDB_VALIDATE_URL = "https://api.themoviedb.org/3/authentication";
 const tokenRequestSchema = z.object({
@@ -65,7 +66,7 @@ export const POST = async (request: NextRequest) => {
 
   let upstream: Response;
   try {
-    upstream = await fetch(TMDB_VALIDATE_URL, {
+    upstream = await fetchWithRetry(TMDB_VALIDATE_URL, {
       headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
       cache: "no-store",
       signal: AbortSignal.timeout(8000),
