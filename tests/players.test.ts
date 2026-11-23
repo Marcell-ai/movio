@@ -21,4 +21,14 @@ describe("player providers", () => {
     expect(getMoviePlayers(603, 90)[0].source).toContain("startAt=90");
     expect(getTvShowPlayers(1399, 1, 1, 90)[0].source).toContain("startAt=90");
   });
+
+  it("excludes providers switched off in the registry", () => {
+    const provider = playerProviders[0];
+    const previous = provider.enabled;
+    provider.enabled = false;
+
+    expect(getMoviePlayers(603).some((player) => player.title === provider.title)).toBe(false);
+
+    provider.enabled = previous;
+  });
 });

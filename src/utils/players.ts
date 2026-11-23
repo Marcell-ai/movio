@@ -1,13 +1,11 @@
 import { playerProviders } from "@/config/players";
 import { PlayersProps } from "@/types";
 
-const enabledPlayers = playerProviders.filter(({ enabled }) => enabled);
-
 /**
  * Generates enabled movie players for the provided movie.
  */
 export const getMoviePlayers = (id: string | number, startAt?: number): PlayersProps[] =>
-  enabledPlayers.map(({ movie, ...player }) => ({
+  playerProviders.filter(({ enabled }) => enabled).map(({ movie, ...player }) => ({
     ...player,
     source: movie(id, startAt),
   }));
@@ -21,7 +19,7 @@ export const getTvShowPlayers = (
   episode: number,
   startAt?: number,
 ): PlayersProps[] =>
-  enabledPlayers.map(({ tv, ...player }) => ({
+  playerProviders.filter(({ enabled }) => enabled).map(({ tv, ...player }) => ({
     ...player,
     source: tv(id, season, episode, startAt),
   }));
