@@ -9,9 +9,9 @@ const TokenSettings: React.FC = () => (
       Movio uses your own TMDB API token, saved in this browser. You can replace or remove it at any
       time.
     </p>
-    <Button as={Link} href="/setup" variant="flat" className="w-fit">
-      Change or remove token
-    </Button>
+    <Link href="/setup" className="w-fit">
+      <Button variant="flat">Change or remove token</Button>
+    </Link>
   </section>
 );
 

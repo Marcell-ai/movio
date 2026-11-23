@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sanitizeParams } from "@/app/api/tmdb/[...path]/route";
+import { sanitizeParams } from "@/utils/tmdb";
 
 describe("sanitizeParams", () => {
   it("keeps supported parameters in a stable order", () => {

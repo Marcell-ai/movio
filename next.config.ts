@@ -10,7 +10,6 @@ const nextConfig: NextConfig = {
     resolveExtensions: [".mdx", ".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
   },
   experimental: {
-    optimizePackageImports: ["@heroui/react"],
     prefetchInlining: true,
   },
 };
