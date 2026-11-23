@@ -8,7 +8,6 @@ import { useWindowScroll } from "@mantine/hooks";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import FullscreenToggleButton from "../button/FullscreenToggleButton";
-import SearchInput from "../input/SearchInput";
 import ThemeSwitchDropdown from "../input/ThemeSwitchDropdown";
 import BrandLogo from "../other/BrandLogo";
 
@@ -42,18 +41,33 @@ const TopNavbar = () => {
       <NavbarBrand>
         {show ? <BrandLogo /> : <BackButton href={tv ? "/?content=tv" : "/"} />}
       </NavbarBrand>
-      {show && !pathName.startsWith("/search") && (
-        <NavbarContent className="hidden w-full max-w-lg gap-2 md:flex" justify="center">
-          <NavbarItem className="w-full">
-            <Link href="/search" className="w-full">
-              <SearchInput
-                className="pointer-events-none"
-                placeholder="Search your favorite movies..."
-              />
-            </Link>
-          </NavbarItem>
-        </NavbarContent>
-      )}
+      <NavbarContent className="hidden md:flex" justify="center">
+        <nav className="liquid-glass flex items-center gap-1 rounded-full border-white/10 px-1.5 py-1">
+          {siteConfig.navItems.map((item) => {
+            const isActive = pathName === item.href;
+            return (
+              <Link
+                href={item.href}
+                key={item.href}
+                aria-current={isActive ? "page" : undefined}
+                className={cn(
+                  "flex h-9 items-center gap-2 rounded-full px-3 text-sm text-foreground-500 transition-all",
+                  "hover:bg-white/6 hover:text-foreground",
+                  {
+                    "bg-white/10 text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]":
+                      isActive,
+                  },
+                )}
+              >
+                <span className="size-4 [&>*]:size-full">
+                  {isActive ? item.activeIcon : item.icon}
+                </span>
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="flex gap-1">
           <ThemeSwitchDropdown />
