@@ -5,6 +5,9 @@ const config = [
   ...nextConfig,
   ...nextTypescriptConfig,
   {
+    ignores: ["android/**/build/**", "android/.gradle/**", "artifacts/**"],
+  },
+  {
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": "warn",

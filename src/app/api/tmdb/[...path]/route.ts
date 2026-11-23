@@ -45,7 +45,7 @@ export const GET = async (request: NextRequest, ctx: RouteContext<"/api/tmdb/[..
     return Response.json({ success: false, status_message: "Forbidden" }, { status: 403 });
   }
 
-  const rateLimit = checkRateLimit(getClientKey(request, "tmdb"), 120, 60_000);
+  const rateLimit = await checkRateLimit(getClientKey(request, "tmdb"), 120, 60_000);
   if (!rateLimit.allowed) {
     return Response.json(
       { success: false, status_message: "Too many TMDB requests" },

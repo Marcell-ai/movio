@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     return Response.json({ success: false, status_message: "Forbidden" }, { status: 403 });
   }
 
-  const rateLimit = checkRateLimit(getClientKey(request, "providers-health"), 60, 60_000);
+  const rateLimit = await checkRateLimit(getClientKey(request, "providers-health"), 60, 60_000);
   if (!rateLimit.allowed) {
     return Response.json(
       { success: false, status_message: "Too many health requests" },

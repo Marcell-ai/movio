@@ -22,6 +22,11 @@ android/app/src/main/assets/public/
 *.pem
 *.bat
 Movio-project.zip
+artifacts/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
 
 # debug
 npm-debug.log*

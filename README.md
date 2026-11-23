@@ -25,6 +25,13 @@ Movio is an open-source movie and TV discovery app built with Next.js. Browse ti
 
 There is no `.env` file to configure. Each visitor supplies their own token. It is checked with TMDB, then stored in an httpOnly cookie in that browser, so page scripts can't read it and only the app's server sends it to TMDB. It stays saved when you close the app and is renewed every time you use it, so you only enter it once. You can replace or remove it from the About page (or at `/setup`). It is lost only if you clear the site's cookies, browse in a private window, or switch between a browser and an installed copy of the app (they keep separate cookies).
 
+For deployment across multiple serverless instances, optional Upstash Redis credentials can be set:
+
+- `UPSTASH_REDIS_REST_URL`
+- `UPSTASH_REDIS_REST_TOKEN`
+
+Without them, API rate limiting uses process-local memory and is not shared across instances.
+
 ## Architecture
 
 - The App Router serves the UI and keeps the TMDB token in an httpOnly cookie.

@@ -35,7 +35,7 @@ const isSameOrigin = (request: NextRequest) => {
 /** Validates the token with TMDB, then stores it in an httpOnly cookie. */
 export const POST = async (request: NextRequest) => {
   if (!isSameOrigin(request)) return respond({ error: "Forbidden." }, 403);
-  const rateLimit = checkRateLimit(getClientKey(request, "token"), 10, 60_000);
+  const rateLimit = await checkRateLimit(getClientKey(request, "token"), 10, 60_000);
   if (!rateLimit.allowed) {
     return respond(
       { error: "Too many token requests. Try again later." },
