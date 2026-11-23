@@ -46,5 +46,7 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   // Everything except the setup page, API routes and static files the browser needs up front.
-  matcher: ["/((?!api|setup|_next/static|_next/image|favicon.ico|manifest.json|sw.js|icons/).*)"],
+  matcher: [
+    "/((?!api|setup|_next/static|_next/image|favicon.ico|manifest.json|sw.js|icons/|google062dc2597e1d46ee.html).*)",
+  ],
 };
