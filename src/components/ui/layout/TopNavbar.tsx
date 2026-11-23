@@ -28,7 +28,7 @@ const TopNavbar = () => {
       position="sticky"
       maxWidth="full"
       classNames={{ wrapper: "px-2 md:px-4" }}
-      className={cn("liquid-glass inset-x-2 top-2 h-16 rounded-2xl border-white/10 bg-transparent md:inset-x-4", {
+      className={cn("liquid-glass inset-x-2 top-2 h-16 rounded-2xl border-white/10 md:inset-x-4", {
         "bg-background/70": show,
       })}
     >
@@ -52,9 +52,9 @@ const TopNavbar = () => {
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
                   "flex h-9 items-center gap-2 rounded-full px-3 text-sm text-foreground-500 transition-all",
-                  "hover:bg-white/6 hover:text-foreground",
+                  "hover:bg-black/5 hover:text-foreground dark:hover:bg-white/6",
                   {
-                    "bg-white/10 text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]":
+                    "bg-black/5 text-foreground shadow-[inset_0_1px_0_rgba(23,23,27,0.05)] dark:bg-white/10 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]":
                       isActive,
                   },
                 )}
