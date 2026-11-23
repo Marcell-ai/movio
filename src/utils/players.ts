@@ -8,6 +8,7 @@ export const getMoviePlayers = (id: string | number, startAt?: number): PlayersP
   playerProviders.filter(({ enabled }) => enabled).map(({ movie, ...player }) => ({
     ...player,
     source: movie(id, startAt),
+    origin: new URL(movie(id, startAt)).origin as `https://${string}`,
   }));
 
 /**
@@ -22,4 +23,5 @@ export const getTvShowPlayers = (
   playerProviders.filter(({ enabled }) => enabled).map(({ tv, ...player }) => ({
     ...player,
     source: tv(id, season, episode, startAt),
+    origin: new URL(tv(id, season, episode, startAt)).origin as `https://${string}`,
   }));

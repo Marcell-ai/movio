@@ -34,6 +34,8 @@ const MoviePlayer: React.FC<MoviePlayerProps> = ({ movie, startAt }) => {
     getInitialValueInEffect: false,
   });
   const [playerStatus, setPlayerStatus] = useState<"loading" | "loaded" | "failed">("loading");
+  const [offlineOrigins, setOfflineOrigins] = useState<Set<string>>(() => new Set());
+  const attemptedProviders = useRef<Set<number>>(new Set([0]));
 
   const players = getMoviePlayers(movie.id, startAt);
   const title = mutateMovieTitle(movie);
@@ -56,16 +58,48 @@ const MoviePlayer: React.FC<MoviePlayerProps> = ({ movie, startAt }) => {
   const PLAYER = useMemo(() => players[selectedSource] || players[0], [players, selectedSource]);
   const fallbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  useEffect(() => {
+    let active = true;
+    void fetch("/api/providers/health")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((body: { providers?: { origin: string; online: boolean }[] } | null) => {
+        if (!active || !body?.providers) return;
+        setOfflineOrigins(
+          new Set(body.providers.filter(({ online }) => !online).map(({ origin }) => origin)),
+        );
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const tryNextPlayer = useCallback(() => {
     if (players.length < 2) return;
-    const nextIndex = (selectedSource + 1) % players.length;
+    let nextIndex = -1;
+    for (let offset = 1; offset <= players.length; offset++) {
+      const candidate = (selectedSource + offset) % players.length;
+      if (
+        !attemptedProviders.current.has(candidate) &&
+        !offlineOrigins.has(players[candidate].origin ?? "")
+      ) {
+        nextIndex = candidate;
+        break;
+      }
+    }
+    if (nextIndex < 0) {
+      setPlayerStatus("failed");
+      return;
+    }
+    attemptedProviders.current.add(nextIndex);
     setPlayerStatus("loading");
     setSelectedSource(nextIndex);
     setPreferredProvider(players[nextIndex].title);
-  }, [players, selectedSource, setPreferredProvider, setSelectedSource]);
+  }, [offlineOrigins, players, selectedSource, setPreferredProvider, setSelectedSource]);
 
   const selectProvider = useCallback(
     (index: number) => {
+      attemptedProviders.current = new Set([index]);
       setPlayerStatus("loading");
       setSelectedSource(index);
       const player = players[index];

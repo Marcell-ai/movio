@@ -22,6 +22,11 @@ describe("player providers", () => {
     expect(getTvShowPlayers(1399, 1, 1, 90)[0].source).toContain("startAt=90");
   });
 
+  it("includes origins for runtime health filtering", () => {
+    expect(getMoviePlayers(603)[0].origin).toBe("https://vidlink.pro");
+    expect(getTvShowPlayers(1399, 1, 1)[0].origin).toBe("https://vidlink.pro");
+  });
+
   it("excludes providers switched off in the registry", () => {
     const provider = playerProviders[0];
     const previous = provider.enabled;

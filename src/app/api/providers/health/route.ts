@@ -39,12 +39,21 @@ export async function GET(request: NextRequest) {
   const results = await Promise.all(
     [...origins].map(async (origin): Promise<HealthResult> => {
       try {
-        const response = await fetch(origin, {
+        let response = await fetch(origin, {
           method: "HEAD",
           redirect: "follow",
           signal: AbortSignal.timeout(5_000),
           cache: "no-store",
         });
+        if (response.status === 405 || response.status === 501) {
+          response = await fetch(origin, {
+            method: "GET",
+            headers: { Range: "bytes=0-0" },
+            redirect: "follow",
+            signal: AbortSignal.timeout(5_000),
+            cache: "no-store",
+          });
+        }
         return { origin, online: response.status < 500 };
       } catch {
         return { origin, online: false };

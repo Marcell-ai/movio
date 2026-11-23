@@ -58,6 +58,7 @@ export type SiteConfigType = {
 export type PlayersProps = {
   title: string;
   source: `https://${string}`;
+  origin?: `https://${string}`;
   sandbox?: string;
   healthCheckUrl?: `https://${string}`;
   recommended?: boolean;
