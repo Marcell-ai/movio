@@ -1,24 +1,22 @@
-import SectionTitle from "@/components/ui/other/SectionTitle";
-
 const Creator = () => (
-  <section className="liquid-glass flex flex-col gap-4 rounded-2xl p-5 sm:flex-row sm:items-center">
+  <section className="relative isolate overflow-hidden rounded-2xl border border-slate-700/70 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 px-6 py-7 shadow-xl shadow-black/20 sm:px-8">
     <div
-      aria-label="Marcell Stephen"
-      className="flex size-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 text-xl font-bold text-white shadow-lg"
-    >
-      MS
-    </div>
-
-    <div className="flex flex-col gap-2">
-      <SectionTitle>Created by</SectionTitle>
-      <div>
-        <h2 className="text-lg font-bold">Marcell Stephen</h2>
-        <p className="text-primary-500 text-sm font-medium">Computer Science Student</p>
+      aria-hidden="true"
+      className="absolute -top-20 -right-12 -z-10 size-56 rounded-full bg-cyan-400/10 blur-3xl"
+    />
+    <div className="flex items-center gap-5">
+      <div
+        aria-hidden="true"
+        className="h-16 w-1 shrink-0 rounded-full bg-gradient-to-b from-cyan-300 to-blue-500"
+      />
+      <div className="min-w-0">
+        <h2 className="text-2xl font-semibold tracking-tight text-slate-50 sm:text-3xl">
+          Marcell Stephen
+        </h2>
+        <p className="mt-2 text-sm font-medium tracking-wide text-cyan-200 sm:text-base">
+          Computer Science Student
+        </p>
       </div>
-      <p className="text-foreground-500 text-sm leading-relaxed">
-        Marcell created Movio to turn a love of movies and technology into a simpler, more
-        enjoyable way to discover something worth watching.
-      </p>
     </div>
   </section>
 );
