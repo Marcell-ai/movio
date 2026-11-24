@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { NextPage } from "next";
 import TokenSettings from "@/components/sections/About/TokenSettings";
+import Creator from "@/components/sections/About/Creator";
 const FAQ = dynamic(() => import("@/components/sections/About/FAQ"));
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ const AboutPage: NextPage = () => {
         <Suspense>
           <FAQ />
         </Suspense>
+        <Creator />
         <TokenSettings />
       </div>
     </div>
