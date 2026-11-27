@@ -21,7 +21,10 @@ const RelatedList: React.FC<{ type: ContentType; items: (Movie | TvShowListItem)
   <div className="z-3 flex flex-col gap-2">
     <Carousel>
       {items.map((item) => (
-        <div key={item.id} className="flex min-h-fit max-w-fit items-center px-1 py-2">
+        <div
+          key={item.id}
+          className="embla__slide flex min-h-fit w-[clamp(140px,40vw,190px)] max-w-[190px] items-center px-1 py-2"
+        >
           <PosterCard type={type} item={item} />
         </div>
       ))}

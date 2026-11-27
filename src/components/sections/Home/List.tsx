@@ -1,9 +1,11 @@
 "use client";
 
 import ContentTypeSelection from "@/components/ui/other/ContentTypeSelection";
+import { tmdb } from "@/api/tmdb-client";
 import { siteConfig } from "@/config/site";
 import { Spinner } from "@heroui/react";
 import dynamic from "next/dynamic";
+import { useQuery } from "@tanstack/react-query";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
 import { Suspense } from "react";
 const HomeList = dynamic(() => import("@/components/sections/Shared/HomeList"));
@@ -15,6 +17,11 @@ const HomePageList: React.FC = () => {
     "content",
     parseAsStringLiteral(["movie", "tv"]).withDefault("movie"),
   );
+  const { data: movieGenres } = useQuery({
+    queryKey: ["home-movie-genres"],
+    queryFn: () => tmdb.genres.movies(),
+    enabled: content === "movie",
+  });
 
   return (
     <div className="flex flex-col gap-10 md:gap-14">
@@ -39,8 +46,26 @@ const HomePageList: React.FC = () => {
             />
           }
         >
-          {content === "movie" &&
-            movies.map((movie) => <HomeList key={movie.name} type="movie" {...movie} />)}
+          {content === "movie" && (
+            <>
+              {movies.slice(0, 2).map((movie) => (
+                <HomeList key={movie.name} type="movie" {...movie} />
+              ))}
+              {movieGenres?.genres.map((genre) => (
+                <HomeList
+                  key={`movie-genre-${genre.id}`}
+                  type="movie"
+                  name={`${genre.name} Movies`}
+                  param="discover"
+                  seeAllHref={`/discover?genres=${genre.id}&content=movie`}
+                  query={() => tmdb.discover.movie({ with_genres: String(genre.id) })}
+                />
+              ))}
+              {movies.slice(2).map((movie) => (
+                <HomeList key={movie.name} type="movie" {...movie} />
+              ))}
+            </>
+          )}
           {content === "tv" && tvShows.map((tv) => <HomeList key={tv.name} type="tv" {...tv} />)}
         </Suspense>
       </div>

@@ -27,12 +27,10 @@ const useDiscoverFilters = () => {
   const types = useMemo(
     () => [
       { name: "Discover", key: DEFAULT_QUERY_TYPE },
-      ...(content === "movie" ? movies.filter(({ genre }) => !genre) : tvShows).map(
-        ({ name, param }) => ({
-          name: name.replace(/(Movies|TV Shows)/g, "").trim(),
-          key: param,
-        }),
-      ),
+      ...(content === "movie" ? movies : tvShows).map(({ name, param }) => ({
+        name: name.replace(/(Movies|TV Shows)/g, "").trim(),
+        key: param,
+      })),
     ],
     [content, movies, tvShows],
   );

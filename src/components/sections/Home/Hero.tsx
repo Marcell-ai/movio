@@ -75,7 +75,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ content }) => {
   }, [items.length]);
 
   if (loading) {
-    return <Skeleton className="h-[420px] w-full rounded-[2rem] md:h-[520px]" />;
+    return <Skeleton className="h-[clamp(400px,72svh,520px)] w-full rounded-3xl md:rounded-[2rem]" />;
   }
 
   if (!items.length) return null;
@@ -89,7 +89,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ content }) => {
 
   return (
     <section
-      className="relative isolate h-[420px] w-full overflow-hidden rounded-[2rem] border border-white/10 bg-black md:h-[520px]"
+      className="relative isolate h-[clamp(400px,72svh,520px)] w-full overflow-hidden rounded-3xl border border-white/10 bg-black md:rounded-[2rem]"
       aria-label={`Featured ${content === "movie" ? "movies" : "TV shows"}`}
     >
       <AnimatePresence mode="sync" initial={false}>
@@ -111,7 +111,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ content }) => {
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(3,7,18,0.92)_0%,rgba(3,7,18,0.58)_42%,rgba(3,7,18,0.08)_75%,rgba(3,7,18,0.25)_100%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(3,7,18,0.88)_0%,transparent_52%,rgba(3,7,18,0.12)_100%)]" />
 
-      <div className="relative z-10 flex h-full max-w-2xl flex-col justify-end px-6 pb-16 sm:px-10 md:px-14 md:pb-20">
+      <div className="relative z-10 flex h-full max-w-2xl flex-col justify-end px-5 pb-16 sm:px-10 md:px-14 md:pb-20">
         <motion.div
           key={`${item.id}-copy`}
           initial={{ opacity: 0, y: 18 }}
@@ -121,7 +121,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ content }) => {
           <p className="mb-3 text-[11px] font-semibold tracking-[0.28em] text-white/70 uppercase">
             Featured {content === "movie" ? "movie" : "series"}
           </p>
-          <h1 className="max-w-xl text-4xl font-black leading-[0.92] tracking-[-0.055em] text-white uppercase sm:text-5xl md:text-6xl">
+          <h1 className="max-w-xl text-3xl font-black leading-[0.98] tracking-[-0.045em] text-white uppercase min-[375px]:text-4xl sm:text-5xl md:text-6xl">
             {title}
           </h1>
           <div className="mt-5 flex flex-wrap items-center gap-3 text-sm text-white/85">

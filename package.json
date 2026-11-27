@@ -11,10 +11,10 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "android:add": "cap add android",
-    "android:sync": "cap sync android",
+    "android:sync": "cap sync android && node -e \"const fs=require('node:fs'); const p=require('node:path').join('android','gradle','wrapper','gradle-wrapper.properties'); fs.writeFileSync(p,fs.readFileSync(p,'utf8').replace(/^distributionUrl=.*$/m,'distributionUrl=https\\\\://services.gradle.org/distributions/gradle-8.14.3-all.zip'));\"",
     "android:open": "cap open android",
-    "android:assemble": "cd android && gradlew.bat assembleRelease",
-    "android:assemble-debug": "cd android && gradlew.bat assembleDebug"
+    "android:assemble": "cd android && java -classpath gradle\\wrapper\\gradle-wrapper.jar org.gradle.wrapper.GradleWrapperMain assembleRelease",
+    "android:assemble-debug": "cd android && java -classpath gradle\\wrapper\\gradle-wrapper.jar org.gradle.wrapper.GradleWrapperMain assembleDebug"
   },
   "dependencies": {
     "@bprogress/next": "^3.2.12",

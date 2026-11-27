@@ -59,55 +59,14 @@ export const siteConfig: SiteConfigType = {
   queryLists: {
     movies: [
       {
-        name: "Today's Trending Movies",
-        query: () => tmdb.trending.trending("movie", "day"),
-        param: "todayTrending",
-      },
-      {
         name: "Top Rated Movies",
         query: () => tmdb.movies.topRated(),
         param: "topRated",
       },
       {
-        name: "Action Movies",
-        query: () => tmdb.discover.movie({ with_genres: "28" }),
-        param: "discover",
-        genre: "28",
-      },
-      {
-        name: "Comedy Movies",
-        query: () => tmdb.discover.movie({ with_genres: "35" }),
-        param: "discover",
-        genre: "35",
-      },
-      {
-        name: "Drama Movies",
-        query: () => tmdb.discover.movie({ with_genres: "18" }),
-        param: "discover",
-        genre: "18",
-      },
-      {
-        name: "Science Fiction Movies",
-        query: () => tmdb.discover.movie({ with_genres: "878" }),
-        param: "discover",
-        genre: "878",
-      },
-      {
-        name: "Animation Movies",
-        query: () => tmdb.discover.movie({ with_genres: "16" }),
-        param: "discover",
-        genre: "16",
-      },
-      {
-        name: "Thriller Movies",
-        query: () => tmdb.discover.movie({ with_genres: "53" }),
-        param: "discover",
-        genre: "53",
-      },
-      {
-        name: "This Week's Trending Movies",
-        query: () => tmdb.trending.trending("movie", "week"),
-        param: "thisWeekTrending",
+        name: "Today's Trending Movies",
+        query: () => tmdb.trending.trending("movie", "day"),
+        param: "todayTrending",
       },
       {
         name: "Popular Movies",

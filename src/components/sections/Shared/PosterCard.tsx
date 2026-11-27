@@ -65,11 +65,17 @@ const PosterCard: React.FC<PosterCardProps> = ({ type, item, variant = "full" })
         placement="right-start"
         content={<HoverCard id={item.id} />}
       >
-        <Link href={`/${type}/${item.id}`} prefetch={false} ref={ref} {...longPress()}>
+        <Link
+          href={`/${type}/${item.id}`}
+          prefetch={false}
+          ref={ref}
+          className="block w-full max-w-[190px]"
+          {...longPress()}
+        >
           {variant === "full" && (
             <div
               className={cn(
-                "group motion-preset-focus relative aspect-2/3 overflow-hidden rounded-2xl border border-white/10 text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(0,0,0,0.38)]",
+                "group motion-preset-focus relative aspect-2/3 w-full overflow-hidden rounded-2xl border border-white/10 text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(0,0,0,0.38)]",
                 ACCENT[type].cardBorder,
               )}
             >
@@ -107,9 +113,9 @@ const PosterCard: React.FC<PosterCardProps> = ({ type, item, variant = "full" })
                 fetchPriority="low"
                 onError={() => setImageFailed(true)}
                 radius="none"
-                className="z-0 aspect-2/3 h-[250px] object-cover object-center transition group-hover:scale-110 md:h-[300px]"
                 classNames={{
-                  img: "group-hover:opacity-70",
+                  wrapper: "absolute inset-0 z-0 size-full",
+                  img: "size-full object-cover object-center transition group-hover:scale-110 group-hover:opacity-70",
                 }}
               />
             </div>

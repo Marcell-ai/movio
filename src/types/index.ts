@@ -13,13 +13,7 @@ export type ActionResponse<T = null> = Promise<{
 }>;
 
 export type MovieParam =
-  | "discover"
-  | "todayTrending"
-  | "thisWeekTrending"
-  | "popular"
-  | "nowPlaying"
-  | "upcoming"
-  | "topRated";
+  "todayTrending" | "thisWeekTrending" | "popular" | "nowPlaying" | "upcoming" | "topRated";
 
 export type TvShowParam =
   "todayTrending" | "thisWeekTrending" | "popular" | "onTheAir" | "topRated";
@@ -39,7 +33,6 @@ export type QueryList<T extends Movie | TvShowListItem> = {
     total_pages: number;
   }>;
   param: T extends Movie ? MovieParam : TvShowParam;
-  genre?: T extends Movie ? string : never;
 };
 
 export type SiteConfigType = {

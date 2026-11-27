@@ -30,7 +30,7 @@ const OverviewSection: React.FC<OverviewSectionProps> = ({ movie }) => {
   useDocumentTitle(`${fullTitle} | ${siteConfig.name}`);
 
   return (
-    <section id="overview" className="relative z-3 flex flex-col gap-8 pt-[20vh] md:pt-[40vh]">
+    <section id="overview" className="relative z-3 flex flex-col gap-8 pt-[28vh] sm:pt-[32vh] md:pt-[40vh]">
       <div className="md:grid md:grid-cols-[auto_1fr] md:gap-6">
         <Image
           isBlurred

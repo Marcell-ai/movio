@@ -59,6 +59,19 @@ For deployment across multiple serverless instances, optional Upstash Redis cred
 
 Without them, API rate limiting uses process-local memory and is not shared across instances.
 
+## Android TV
+
+The Android app is a landscape, Android TV-launchable Capacitor client. It loads the hosted app configured in `capacitor.config.ts`, so the APK requires an internet connection and that site to remain available. It is not a self-contained offline build.
+
+On Windows, install Node.js and the Android SDK, then run:
+
+```powershell
+npm ci
+npm run android:assemble-debug
+```
+
+The installable debug APK is written to `android/app/build/outputs/apk/debug/app-debug.apk`. Android TV remote navigation uses the web UI's visible focus states; a signed release APK requires your own Android signing configuration. If native plugins change, run `npm run android:sync` before building.
+
 ## Architecture
 
 - The App Router serves the UI and keeps the TMDB token in an httpOnly cookie.

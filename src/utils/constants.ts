@@ -15,8 +15,8 @@ const TV_PROVIDER_STORAGE_KEY = "preferred-tv-provider";
 // Others
 const ITEMS_PER_PAGE = 20;
 const SpacingClasses = {
-  main: "px-3 py-8 sm:px-5",
-  reset: "-mx-3 -my-8 sm:-mx-5",
+  main: "px-4 py-6 sm:px-6 sm:py-8 lg:px-10 xl:px-12",
+  reset: "-mx-4 -my-6 sm:-mx-6 sm:-my-8 lg:-mx-10 xl:-mx-12",
 };
 
 // Exports

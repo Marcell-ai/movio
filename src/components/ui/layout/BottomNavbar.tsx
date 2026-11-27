@@ -14,16 +14,17 @@ const BottomNavbar = () => {
   return (
     show && (
       <>
-        <div className="pt-20 md:hidden" />
-        <div className="liquid-glass fixed bottom-2 left-2 z-50 block h-fit w-[calc(100%-1rem)] translate-y-px rounded-[1.35rem] border-white/10 py-2 shadow-[0_16px_50px_rgba(0,0,0,0.38)] md:hidden">
-          <div className="mx-auto grid h-full max-w-lg grid-cols-5">
+        <div className="h-20 md:hidden" />
+        <div className="liquid-glass fixed bottom-[max(0.5rem,env(safe-area-inset-bottom))] left-2 z-50 block h-fit w-[calc(100%-1rem)] rounded-[1.35rem] border-white/10 px-1 py-2 shadow-[0_16px_50px_rgba(0,0,0,0.38)] md:hidden">
+          <div className="mx-auto grid h-full max-w-lg grid-cols-4">
             {siteConfig.navItems.map((item) => {
               const isActive = pathName === item.href;
               return (
                 <Link
                   href={item.href}
                   key={item.href}
-                  className="flex items-center justify-center text-foreground"
+                  aria-current={isActive ? "page" : undefined}
+                  className="flex min-h-12 items-center justify-center text-foreground"
                 >
                   <div className="flex max-h-[50px] flex-col items-center justify-center">
                     <Chip

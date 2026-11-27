@@ -16,11 +16,11 @@ interface HomeListProps {
   name: string;
   /** `?type=` value understood by the discover page */
   param: string;
-  genre?: string;
+  seeAllHref?: string;
   query: () => Promise<{ results: (Movie | TvShowListItem)[] }>;
 }
 
-const HomeList: React.FC<HomeListProps> = ({ type, query, name, param, genre }) => {
+const HomeList: React.FC<HomeListProps> = ({ type, query, name, param, seeAllHref }) => {
   const key = kebabCase(name) + "-list";
   const { ref, inViewport } = useInViewport();
   const { data, isPending } = useQuery({
@@ -54,9 +54,7 @@ const HomeList: React.FC<HomeListProps> = ({ type, query, name, param, genre }) 
             </SectionTitle>
             <Link
               size="sm"
-              href={`/discover?type=${param}${genre ? `&genres=${genre}` : ""}${
-                type === "tv" ? "&content=tv" : ""
-              }`}
+              href={seeAllHref ?? `/discover?type=${param}${type === "tv" ? "&content=tv" : ""}`}
               isBlock
               color="foreground"
               className="rounded-full px-3 text-xs tracking-wide uppercase"
@@ -68,7 +66,7 @@ const HomeList: React.FC<HomeListProps> = ({ type, query, name, param, genre }) 
             {data?.results.map((item) => (
               <div
                 key={item.id}
-                className="embla__slide flex min-h-fit max-w-fit items-center px-1 py-2"
+                className="embla__slide flex min-h-fit w-[clamp(140px,40vw,190px)] max-w-[190px] items-center px-1 py-2"
               >
                 <PosterCard type={type} item={item} />
               </div>
