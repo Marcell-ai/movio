@@ -4,7 +4,6 @@ import BrandLogo from "@/components/ui/other/BrandLogo";
 import IconButton from "@/components/ui/button/IconButton";
 import { Eye, EyeOff } from "@/utils/icons";
 import { Button, Card, CardBody, CardHeader, Input, Link } from "@heroui/react";
-import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -20,7 +19,7 @@ interface TokenFormProps {
 const TokenForm: React.FC<TokenFormProps> = ({ hasToken, next, rejected }) => {
   const router = useRouter();
   const [token, setToken] = useState("");
-  const [show, { toggle }] = useDisclosure(false);
+  const [show, setShow] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -40,9 +39,8 @@ const TokenForm: React.FC<TokenFormProps> = ({ hasToken, next, rejected }) => {
     setLoading(true);
     try {
       await request("POST");
-      // full navigation so the server sees the new cookie and cached data is dropped
-      router.push(next);
-      router.refresh();
+      // Reload so the next page is rendered with the newly set token cookie.
+      window.location.assign(next);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
       setLoading(false);
@@ -122,7 +120,8 @@ const TokenForm: React.FC<TokenFormProps> = ({ hasToken, next, rejected }) => {
                   size="sm"
                   variant="light"
                   aria-label={show ? "Hide token" : "Show token"}
-                  onPress={toggle}
+                  type="button"
+                  onPress={() => setShow((visible) => !visible)}
                   icon={show ? <EyeOff className="text-xl" /> : <Eye className="text-xl" />}
                 />
               }
