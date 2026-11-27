@@ -16,10 +16,11 @@ interface HomeListProps {
   name: string;
   /** `?type=` value understood by the discover page */
   param: string;
+  genre?: string;
   query: () => Promise<{ results: (Movie | TvShowListItem)[] }>;
 }
 
-const HomeList: React.FC<HomeListProps> = ({ type, query, name, param }) => {
+const HomeList: React.FC<HomeListProps> = ({ type, query, name, param, genre }) => {
   const key = kebabCase(name) + "-list";
   const { ref, inViewport } = useInViewport();
   const { data, isPending } = useQuery({
@@ -53,7 +54,9 @@ const HomeList: React.FC<HomeListProps> = ({ type, query, name, param }) => {
             </SectionTitle>
             <Link
               size="sm"
-              href={`/discover?type=${param}${type === "tv" ? "&content=tv" : ""}`}
+              href={`/discover?type=${param}${genre ? `&genres=${genre}` : ""}${
+                type === "tv" ? "&content=tv" : ""
+              }`}
               isBlock
               color="foreground"
               className="rounded-full px-3 text-xs tracking-wide uppercase"
