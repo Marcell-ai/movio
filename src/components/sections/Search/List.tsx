@@ -7,6 +7,7 @@ import useDiscoverFilters from "@/hooks/useDiscoverFilters";
 import { ContentType } from "@/types";
 import { isEmpty } from "@/utils/helpers";
 import { getLoadingLabel } from "@/utils/movies";
+import type { GenreCountrySearch } from "@/utils/search";
 import { Spinner } from "@heroui/react";
 import { useInViewport } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -19,13 +20,30 @@ type FetchType = {
   page: number;
   type: ContentType;
   query: string;
+  genreCountrySearch: GenreCountrySearch | null;
 };
 
-const fetchData = async ({
+type SearchResults =
+  | Search<Movie>
+  | Search<TV>
+  | Awaited<ReturnType<typeof tmdb.discover.movie>>
+  | Awaited<ReturnType<typeof tmdb.discover.tvShow>>;
+
+const fetchData = ({
   page,
   type = "movie",
   query,
-}: FetchType): Promise<Search<Movie> | Search<TV>> => {
+  genreCountrySearch,
+}: FetchType): Promise<SearchResults> => {
+  if (genreCountrySearch?.content === type) {
+    const options = {
+      page,
+      with_genres: String(genreCountrySearch.genreId),
+      with_origin_country: genreCountrySearch.countryCode,
+    };
+    if (type === "movie") return tmdb.discover.movie(options);
+    return tmdb.discover.tvShow(options);
+  }
   if (type === "movie") return tmdb.search.movies({ query, page });
   return tmdb.search.tvShows({ query, page });
 };
@@ -34,13 +52,28 @@ const SearchList = () => {
   const { content } = useDiscoverFilters();
   const { ref, inViewport } = useInViewport();
   const [submittedSearchQuery, setSubmittedSearchQuery] = useState("");
+  const [submittedGenreCountrySearch, setSubmittedGenreCountrySearch] =
+    useState<GenreCountrySearch | null>(null);
+  const genreCountrySearch =
+    submittedGenreCountrySearch?.content === content ? submittedGenreCountrySearch : null;
   const triggered = !isEmpty(submittedSearchQuery);
   const { data, isFetching, isPending, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useInfiniteQuery({
       enabled: triggered,
-      queryKey: ["search-list", content, submittedSearchQuery],
+      queryKey: [
+        "search-list",
+        content,
+        submittedSearchQuery,
+        genreCountrySearch?.genreId,
+        genreCountrySearch?.countryCode,
+      ],
       queryFn: ({ pageParam: page }) =>
-        fetchData({ page, type: content, query: submittedSearchQuery }),
+        fetchData({
+          page,
+          type: content,
+          query: submittedSearchQuery,
+          genreCountrySearch,
+        }),
       initialPageParam: 1,
       getNextPageParam: (lastPage) =>
         lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined,
@@ -57,11 +90,14 @@ const SearchList = () => {
   }, [content]);
 
   const renderSearchResults = () => {
+      const resultDescription = genreCountrySearch
+        ? `${genreCountrySearch.genreName} ${content === "movie" ? "movies" : "TV shows"} from ${genreCountrySearch.countryName}`
+        : `${content === "movie" ? "movies" : "TV series"} with query "${submittedSearchQuery}"`;
+
       if (isEmpty(data?.pages[0].results)) {
         return (
           <h5 className="mt-56 text-center text-xl">
-            No {content === "movie" ? "movies" : "TV series"} found with query{" "}
-            <span className="text-warning font-semibold">&quot;{submittedSearchQuery}&quot;</span>
+            No <span className="text-warning font-semibold">{resultDescription}</span> found.
           </h5>
         );
       }
@@ -72,8 +108,7 @@ const SearchList = () => {
             <span className="motion-preset-focus">
               Found{" "}
               <span className="text-success font-semibold">{data?.pages[0].total_results}</span>{" "}
-              {content === "movie" ? "movies" : "TV series"} with query{" "}
-              <span className="text-warning font-semibold">&quot;{submittedSearchQuery}&quot;</span>
+              <span className="text-warning font-semibold">{resultDescription}</span>
             </span>
           </h5>
           <div className="movie-grid">
@@ -102,7 +137,10 @@ const SearchList = () => {
     <div className="flex flex-col items-center gap-8">
       <SearchFilter
         isLoading={isFetching}
-        onSearchSubmit={(value) => setSubmittedSearchQuery(value.trim())}
+        onSearchSubmit={(value, intent) => {
+          setSubmittedSearchQuery(value.trim());
+          setSubmittedGenreCountrySearch(intent ?? null);
+        }}
       />
       {triggered && (
         <>

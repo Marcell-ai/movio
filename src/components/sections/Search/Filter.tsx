@@ -1,6 +1,8 @@
 "use client";
 
-import { getSearchSuggestions } from "@/utils/search";
+import { tmdb } from "@/api/tmdb-client";
+import { getSearchSuggestions, parseGenreCountrySearch } from "@/utils/search";
+import type { GenreCountrySearch } from "@/utils/search";
 import SearchInput from "@/components/ui/input/SearchInput";
 import ContentTypeSelection from "@/components/ui/other/ContentTypeSelection";
 import Highlight from "@/components/ui/other/Highlight";
@@ -19,7 +21,7 @@ import { useCallback, useState } from "react";
 
 interface SearchFilterProps extends React.HTMLAttributes<HTMLFormElement> {
   isLoading?: boolean;
-  onSearchSubmit?: (value: string) => void;
+  onSearchSubmit?: (value: string, genreCountrySearch?: GenreCountrySearch | null) => void;
 }
 
 const SearchFilter: React.FC<SearchFilterProps> = ({ isLoading, onSearchSubmit, ...props }) => {
@@ -33,6 +35,32 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ isLoading, onSearchSubmit, 
     key: SEARCH_HISTORY_STORAGE_KEY,
     defaultValue: [],
   });
+  const hasMultipleTerms = searchQuery.trim().split(/\s+/).filter(Boolean).length > 1;
+  const { data: genres, isPending: isGenresPending, isError: isGenresError } = useQuery({
+    enabled: hasMultipleTerms && !triggered,
+    queryKey: ["search-intent-genres", content],
+    queryFn: () => (content === "movie" ? tmdb.genres.movies() : tmdb.genres.tvShows()),
+    staleTime: 1000 * 60 * 60 * 24,
+  });
+  const {
+    data: countries,
+    isPending: isCountriesPending,
+    isError: isCountriesError,
+  } = useQuery({
+    enabled: hasMultipleTerms && !triggered,
+    queryKey: ["search-intent-countries"],
+    queryFn: () => tmdb.configuration.countries(),
+    staleTime: 1000 * 60 * 60 * 24,
+  });
+  const isIntentLookupLoading =
+    hasMultipleTerms && !triggered && (isGenresPending || isCountriesPending);
+  const intentLookupFailed = hasMultipleTerms && (isGenresError || isCountriesError);
+  const genreCountrySearch = parseGenreCountrySearch(
+    searchQuery,
+    content,
+    genres?.genres ?? [],
+    countries ?? [],
+  );
   const enableFetch = debouncedSearchQuery.length > 3 && !isLoading && !triggered;
   const { data, isFetching } = useQuery({
     enabled: enableFetch,
@@ -42,22 +70,32 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ isLoading, onSearchSubmit, 
     staleTime: 1000 * 60 * 5,
   });
   const showSuggestions = enableFetch && !isFetching;
-  const showHistory = !showSuggestions && !isEmpty(searchHistories) && !isLoading && !triggered;
+  const showIntentSuggestion = Boolean(genreCountrySearch) && !triggered && !isLoading;
+  const showHistory =
+    !showIntentSuggestion && !showSuggestions && !isEmpty(searchHistories) && !isLoading && !triggered;
+  const showSuggestionList =
+    showIntentSuggestion || (showSuggestions && !isEmpty(data?.data)) || showHistory;
+
+  const submitSearch = useCallback(
+    (value: string, intent?: GenreCountrySearch | null) => {
+      setTriggered(!isEmpty(value));
+      onSearchSubmit?.(value, intent);
+      if (value && !searchHistories.includes(value)) {
+        const newHistories = [...searchHistories, value];
+        if (newHistories.length > 5) newHistories.shift();
+        setSearchHistories(newHistories);
+      }
+    },
+    [onSearchSubmit, searchHistories, setSearchHistories],
+  );
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      setTriggered(!isEmpty(searchQuery));
-      onSearchSubmit?.(searchQuery);
-      if (searchQuery && !searchHistories.includes(searchQuery)) {
-        const newHistories = [...searchHistories, searchQuery];
-        if (newHistories.length > 5) {
-          newHistories.shift();
-        }
-        setSearchHistories(newHistories);
-      }
+      if (isIntentLookupLoading) return;
+      submitSearch(searchQuery, genreCountrySearch);
     },
-    [onSearchSubmit, searchHistories, searchQuery, setSearchHistories],
+    [genreCountrySearch, isIntentLookupLoading, searchQuery, submitSearch],
   );
 
   const handleClear = useCallback(() => {
@@ -80,7 +118,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ isLoading, onSearchSubmit, 
           <SearchInput
             autoFocus
             placeholder={`Search your favorite ${content === "movie" ? "movies" : "TV shows"}...`}
-            isLoading={isLoading}
+            isLoading={isLoading || isIntentLookupLoading}
             value={searchQuery}
             onValueChange={(val) => {
               setSearchQuery(val);
@@ -98,7 +136,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ isLoading, onSearchSubmit, 
               >
                 <Button
                   aria-label="Submit search"
-                  isLoading={isLoading}
+                  isLoading={isLoading || isIntentLookupLoading}
                   isIconOnly={mobile}
                   type="submit"
                   radius="full"
@@ -111,7 +149,17 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ isLoading, onSearchSubmit, 
             )}
           </AnimatePresence>
         </div>
-        {(showSuggestions || showHistory) && !(showSuggestions && isEmpty(data?.data)) && (
+        {isIntentLookupLoading && (
+          <p role="status" className="text-muted-foreground absolute top-12 z-999 w-full text-sm md:top-13">
+            Checking for a matching country and genre...
+          </p>
+        )}
+        {intentLookupFailed && !isIntentLookupLoading && (
+          <p role="status" className="text-danger absolute top-12 z-999 w-full text-sm md:top-13">
+            Couldn&apos;t load country and genre filters. You can still search by title.
+          </p>
+        )}
+        {showSuggestionList && (
           <AnimatePresence>
             <motion.div
               initial={{ height: 0, opacity: 0 }}
@@ -129,6 +177,24 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ isLoading, onSearchSubmit, 
                 }}
               >
                 <>
+                  {genreCountrySearch && (
+                    <ListboxItem
+                      key="genre-country-search"
+                      className="text-start"
+                      startContent={<Search className="text-primary" />}
+                      textValue={`${genreCountrySearch.genreName} ${content === "movie" ? "movies" : "TV shows"} from ${genreCountrySearch.countryName}`}
+                      onPress={() => submitSearch(searchQuery, genreCountrySearch)}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span>
+                          {genreCountrySearch.genreName}{" "}
+                          {content === "movie" ? "movies" : "TV shows"} from{" "}
+                          {genreCountrySearch.countryName}
+                        </span>
+                        <span className="text-muted-foreground text-xs">Genre + country</span>
+                      </div>
+                    </ListboxItem>
+                  )}
                   {showHistory &&
                     searchHistories.map((history, index) => (
                       <ListboxItem

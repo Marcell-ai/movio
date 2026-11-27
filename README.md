@@ -5,7 +5,7 @@ Movio is an open-source movie and TV discovery app built with Next.js. Browse ti
 ## Features
 
 - Browse popular, trending, upcoming, and top-rated movies and TV shows.
-- Search for titles, actors, and genres.
+- Search for titles and find movies or TV shows by country of origin and genre (for example, `Indonesia horror`).
 - Responsive layout with light and dark themes.
 - Installable as an app from your browser's install menu (web app manifest). It needs an internet connection; there is no offline mode.
 

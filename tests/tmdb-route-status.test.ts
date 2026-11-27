@@ -45,6 +45,14 @@ describe("TMDB route status handling", () => {
     expect(response.status).toBe(401);
   });
 
+  it("allows the country configuration endpoint", async () => {
+    const response = await GET(
+      request("http://localhost/api/tmdb/configuration/countries", "198.51.100.34"),
+      context(["configuration", "countries"]),
+    );
+    expect(response.status).toBe(401);
+  });
+
   it("returns 502 when upstream fetch fails", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("timeout")));
     const req = request("http://localhost/api/tmdb/movie/popular", "198.51.100.33");

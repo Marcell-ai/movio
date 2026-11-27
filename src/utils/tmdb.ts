@@ -24,6 +24,12 @@ export const sanitizeParams = (searchParams: URLSearchParams): URLSearchParams |
     if (genres) params.set("with_genres", genres);
   }
 
+  const originCountry = searchParams.get("with_origin_country");
+  if (originCountry !== null) {
+    if (!/^[A-Z]{2}(,[A-Z]{2})*$/.test(originCountry)) return null;
+    params.set("with_origin_country", originCountry);
+  }
+
   const append = searchParams.get("append_to_response");
   if (append !== null) {
     const values = append.split(",").filter(Boolean);

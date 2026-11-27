@@ -1,6 +1,8 @@
-import type { TMDB } from "tmdb-ts";
+import type { CountryConfiguration, TMDB } from "tmdb-ts";
 
 type Params = Record<string, string | number | undefined>;
+type MovieDiscoverResult = Awaited<ReturnType<TMDB["discover"]["movie"]>>;
+type TvShowDiscoverResult = Awaited<ReturnType<TMDB["discover"]["tvShow"]>>;
 
 /**
  * Fetches TMDB data through our `/api/tmdb` route, which adds the visitor's token (kept in an
@@ -74,17 +76,22 @@ export const tmdb = {
         pageOnly(options),
       )) as TMDB["trending"]["trending"],
   },
+  configuration: {
+    countries: () => get<CountryConfiguration[]>("configuration/countries"),
+  },
   discover: {
-    movie: ((options) =>
-      get("discover/movie", {
+    movie: (options?: { page?: number; with_genres?: string; with_origin_country?: string }) =>
+      get<MovieDiscoverResult>("discover/movie", {
         page: options?.page,
         with_genres: options?.with_genres,
-      })) as TMDB["discover"]["movie"],
-    tvShow: ((options) =>
-      get("discover/tv", {
+        with_origin_country: options?.with_origin_country,
+      }),
+    tvShow: (options?: { page?: number; with_genres?: string; with_origin_country?: string }) =>
+      get<TvShowDiscoverResult>("discover/tv", {
         page: options?.page,
         with_genres: options?.with_genres,
-      })) as TMDB["discover"]["tvShow"],
+        with_origin_country: options?.with_origin_country,
+      }),
   },
   search: {
     movies: ((options) =>

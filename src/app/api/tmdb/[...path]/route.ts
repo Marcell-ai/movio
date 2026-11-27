@@ -14,6 +14,7 @@ const ROUTES: { pattern: RegExp; ttl: number }[] = [
   { pattern: /^movie\/(now_playing|upcoming)$/, ttl: HOUR },
   { pattern: /^tv\/on_the_air$/, ttl: HOUR },
   { pattern: /^trending\/(movie|tv)\/(day|week)$/, ttl: HOUR },
+  { pattern: /^configuration\/countries$/, ttl: 7 * DAY },
   { pattern: /^discover\/(movie|tv)$/, ttl: HOUR },
   { pattern: /^search\/(movie|tv)$/, ttl: HOUR },
   { pattern: /^genre\/(movie|tv)\/list$/, ttl: 7 * DAY },

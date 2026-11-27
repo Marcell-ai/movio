@@ -32,12 +32,14 @@ describe("sanitizeParams", () => {
         include_image_language: "en,null",
         query: "  dune  ",
         page: "2",
+        with_genres: "27",
+        with_origin_country: "ID",
         append_to_response: "images,videos",
       }),
     );
 
     expect(params?.toString()).toBe(
-      "page=2&query=dune&append_to_response=images%2Cvideos&include_image_language=en%2Cnull",
+      "page=2&query=dune&with_genres=27&with_origin_country=ID&append_to_response=images%2Cvideos&include_image_language=en%2Cnull",
     );
   });
 
@@ -46,6 +48,8 @@ describe("sanitizeParams", () => {
     expect(
       sanitizeParams(new URLSearchParams({ append_to_response: "images,account" })),
     ).toBeNull();
+    expect(sanitizeParams(new URLSearchParams({ with_origin_country: "id" }))).toBeNull();
+    expect(sanitizeParams(new URLSearchParams({ with_origin_country: "ID;DROP" }))).toBeNull();
   });
 
   it("rejects empty or oversized search queries", () => {
